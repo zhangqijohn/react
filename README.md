@@ -74,6 +74,11 @@
 
 ```
 
+> 修改 ip 地址
+
+1. node-web/server/config/config.local.ts
+1. node-web/src/setupProxy.js
+
 > Web客户端
 ```
     cd node-web进入客户端目录
