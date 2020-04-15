@@ -10,6 +10,7 @@ import {
 import FooterComponent from "./footer";
 import Sider from './sider'
 import Content from './content'
+import BreadCrumb from './breadcrumb'
 
 const { Header } = Layout;
 
@@ -59,6 +60,7 @@ class LayoutComponent extends React.Component<any, any> {
                             >
                                 { React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined) }
                             </div>
+                            <BreadCrumb></BreadCrumb>
                             <div className="q1-dropdown">
                                 <Dropdown overlay={ this.menu }>
                                     <div className="q1-dropdown__container">
