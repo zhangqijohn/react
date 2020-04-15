@@ -23,7 +23,7 @@ class NavComponent extends React.Component<any, any> {
         </Menu>
     );
 
-    userName = '谭金宇';
+    userName = '张三';
 
     formatterUserName (value:string) {
         return value.substr(-2)

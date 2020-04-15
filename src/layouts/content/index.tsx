@@ -4,6 +4,7 @@ import { RoutesContext } from '@/context'
 import { Switch, Route } from 'react-router-dom';
 import { flatRoutes } from '@/routes';
 import NotFount from '@/pages/NotFount';
+import './index.css'
 
 const Content = Layout.Content;
 
@@ -27,11 +28,6 @@ export default function (props: ContentProps) {
   return (
     <Content
         className="site-layout-background"
-        style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 280
-        }}
     >
       <Switch>
         {Routes}

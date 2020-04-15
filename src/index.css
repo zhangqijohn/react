@@ -3,6 +3,7 @@ body {
   font-family: "Microsoft YaHei UI Light";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 480px;
 }
 
 code {

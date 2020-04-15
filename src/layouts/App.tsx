@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router,  Switch  as RouteSwitch } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import Layout from '@/layouts/layout';
 import { RoutesContext } from '@/context';

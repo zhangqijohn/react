@@ -2,7 +2,7 @@ import React from 'react';
 import page from '@/pages/NotImplement';
 import NotFount from '@/pages/NotFount';
 import {
-  UserOutlined, HomeOutlined, VideoCameraOutlined, UploadOutlined
+  UserOutlined, HomeOutlined
 } from '@ant-design/icons';
 
 interface ConfigurableRoute {
@@ -16,12 +16,12 @@ interface ConfigurableRoute {
 const configurableRoutes: ConfigurableRoute[] = [
   {
     path: "/",
-    title: <><HomeOutlined></HomeOutlined><span>主页</span></>,
+    title: <><HomeOutlined></HomeOutlined><span>首页</span></>,
     component: page,
   },
   {
     path: "/login",
-    title: <><HomeOutlined></HomeOutlined><span>主页</span></>,
+    title: <><HomeOutlined></HomeOutlined><span>登录</span></>,
     component: page,
     hidden: true,
   },
@@ -31,22 +31,12 @@ const configurableRoutes: ConfigurableRoute[] = [
     component: page,
   },
   {
-    path: "/auto",
-    title: <><VideoCameraOutlined /><span>自动化运维</span></>,
-    component: page,
-  },
-  {
-    path: "/syhd",
-    title: <><UploadOutlined /><span>手游活动</span></>,
-    component: page,
-  },
-  {
-    path: "/example",
-    title: "a",
+    path: "/mine",
+    title: <><UserOutlined /><span>我的告警</span></>,
     routes: [
       {
-        path: "abc",
-        title: "abc",
+        path: "unhandle",
+        title: "未处理",
         component: page,
       }
     ]

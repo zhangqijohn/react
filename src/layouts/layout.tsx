@@ -11,6 +11,7 @@ import FooterComponent from "./footer";
 import Sider from './sider'
 import Content from './content'
 import BreadCrumb from './breadcrumb'
+import Tabs from './tabs'
 
 const { Header } = Layout;
 
@@ -31,14 +32,14 @@ class LayoutComponent extends React.Component<any, any> {
         </Menu>
     );
 
-    userName = '谭金宇';
+    userName = '张三';
 
     formatterUserName (value:string) {
         return value.substr(-2)
     }
 
     state = {
-        collapsed: true
+        collapsed: false
     };
 
     toggle = () => {
@@ -71,6 +72,7 @@ class LayoutComponent extends React.Component<any, any> {
                                 </Dropdown>
                             </div>
                         </Header>
+                        <Tabs></Tabs>
                         <Content></Content>
                         <FooterComponent />
                     </Layout>

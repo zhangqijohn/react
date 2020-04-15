@@ -5,7 +5,7 @@ export default () => {
     cluster: {
       listen: {
         port: 5000,
-        hostname: '172.16.13.63'
+        hostname: '0.0.0.0'
       }
     }
   };

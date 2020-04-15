@@ -1,11 +1,10 @@
 import { Alert } from 'antd'
 import React from 'react';
-import { useRouteMatch } from 'react-router-dom'
+import { useRouteConfig } from '@/context'
 
 export default function() {
-  const { path, url } = useRouteMatch();
-  const msg = JSON.stringify({ path, url })
+  const route = useRouteConfig();
   return (
-    <Alert message={`${msg}开发中...`} type="warning" />
+    <Alert message={<>{route?.title}</>} type="warning" />
   );
 }
