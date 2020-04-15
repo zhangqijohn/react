@@ -1,18 +1,17 @@
 import React from "react";
 import "./layout.css";
-import { Layout, Menu, Alert, Dropdown, Avatar } from 'antd';
+import { Layout, Menu, Dropdown, Avatar } from 'antd';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined, HomeOutlined, LogoutOutlined, DownOutlined
+    HomeOutlined, LogoutOutlined, DownOutlined
 } from '@ant-design/icons';
-import logo from "../assets/logo.png";
 import FooterComponent from "./footer";
-import GameComponent from "../pages/game";
+import Sider from './sider'
+import Content from './content'
 
-const { Header, Sider, Content } = Layout;
+const { Header } = Layout;
 
 class LayoutComponent extends React.Component<any, any> {
     menu = (
@@ -51,26 +50,7 @@ class LayoutComponent extends React.Component<any, any> {
         return (
             <div className="q1-container">
                 <Layout>
-                    <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
-                        <div className="logo">
-                            <img src={logo} alt="冰川网络"/>
-                            <h1>冰川业务中台</h1>
-                        </div>
-                        <Menu theme="dark" mode="inline" defaultSelectedKeys={['2']}>
-                            <Menu.Item key="1">
-                                <UserOutlined />
-                                <span>DevOps</span>
-                            </Menu.Item>
-                            <Menu.Item key="2">
-                                <VideoCameraOutlined />
-                                <span>自动化运维</span>
-                            </Menu.Item>
-                            <Menu.Item key="3">
-                                <UploadOutlined />
-                                <span>手游活动</span>
-                            </Menu.Item>
-                        </Menu>
-                    </Sider>
+                    <Sider collapsed={this.state.collapsed} />
                     <Layout className="site-layout">
                         <Header className="q1-header" style={{ padding: 0 }}>
                             <div
@@ -89,17 +69,7 @@ class LayoutComponent extends React.Component<any, any> {
                                 </Dropdown>
                             </div>
                         </Header>
-                        <Content
-                            className="site-layout-background"
-                            style={{
-                                margin: '24px 16px',
-                                padding: 24,
-                                minHeight: 280
-                            }}
-                        >
-                            <Alert message="开发中..." type="warning" />
-                            <GameComponent/>
-                        </Content>
+                        <Content></Content>
                         <FooterComponent />
                     </Layout>
                 </Layout>

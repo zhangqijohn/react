@@ -1,8 +1,8 @@
 import React from "react";
 import { Layout, Menu, Dropdown, Avatar } from "antd";
 import { LogoutOutlined, HomeOutlined, UserOutlined, DownOutlined } from "@ant-design/icons";
-import "./nav.css";
-import logo from "../assets/logo.png";
+import "./index.css";
+import logo from "@/assets/logo.png";
 
 const { Header } = Layout;
 
@@ -34,10 +34,6 @@ class NavComponent extends React.Component<any, any> {
             <div>
                 <Layout>
                     <Header className="q1-top-header">
-                        <div className="logo">
-                            <img src={ logo } alt="冰川网络"/>
-                            <h1>冰川业务中台</h1>
-                        </div>
                         <Menu
                             className="q1-top-menu"
                             theme="dark"
