@@ -18,7 +18,7 @@ export default function (props: BreadcrumbProps) {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
     const route: RouteConfig | undefined = routesMap.get(url);
     if (!route || !routeConfig) {
-      return <></>;
+      return null;
     }
     return (
       <Breadcrumb.Item key={url}>
@@ -28,12 +28,12 @@ export default function (props: BreadcrumbProps) {
         }
       </Breadcrumb.Item>
     );
-  });
+  }).filter(x => x);
   const breadcrumbItems = [
     <Breadcrumb.Item key="home">
       <Link to="/">{ routesMap.get('/')!.title }</Link>
     </Breadcrumb.Item>,
-  ].concat(extraBreadcrumbItems);
+  ].concat(extraBreadcrumbItems as JSX.Element[]);
   return (
     <Breadcrumb className="bread-crumb">{breadcrumbItems}</Breadcrumb>
   );
