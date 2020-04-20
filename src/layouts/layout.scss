@@ -65,4 +65,9 @@
 }
 .q1-main{
   margin-left: 200px;
+  transition: margin-left .2s;
+}
+
+.ant-layout-sider-collapsed+.q1-main {
+  margin-left: 80px;
 }
