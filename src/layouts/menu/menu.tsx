@@ -5,7 +5,7 @@ import { Menu } from 'antd'
 import { MenuProps } from "antd/lib/menu";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { RouteConfig } from '@/routes';
-import { RoutesContext } from '@/context'
+import { RoutesContext, useRouteConfig } from '@/context'
 import SVGIcon from "@/components/SvgIcon";
 
 const { Item, SubMenu } = Menu;
@@ -18,6 +18,16 @@ export default function RoutesMenu (props: RoutesMenuProps) {
   const routes = useContext(RoutesContext);
   const history = useHistory();
   const location = useLocation();
+  const routeConfig = useRouteConfig();
+  const defaultOpenKeys = useMemo(() => {
+    const parentRoutes = [];
+    let cur = routeConfig!.parent;
+    while (cur != null) {
+      parentRoutes.push(cur.path);
+      cur = cur.parent;
+    }
+    return parentRoutes;
+  }, [ routeConfig ]);
   const routesMenuItems = useMemo(() => {
     function _transformRoutes(routes: RouteConfig[]) {
       return routes.filter(route => !route.hidden).map((route) => {
@@ -50,7 +60,7 @@ export default function RoutesMenu (props: RoutesMenuProps) {
     theme: 'dark'
   }, props)
   return (
-    <Menu {...props} selectedKeys={[location.pathname]}>
+    <Menu {...props} defaultOpenKeys={defaultOpenKeys} selectedKeys={[location.pathname]}>
       { props.prepend || null }
       { routesMenuItems }
     </Menu>
