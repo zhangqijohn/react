@@ -1,0 +1,45 @@
+.q1-top-header{
+  display: flex;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  .anticon-down{
+    transform: scale(0.7);
+    font-size: 10px;
+  }
+}
+
+.q1-top-menu {
+  flex: 10 0;
+}
+
+.q1-navbar {
+  flex: 10 0;
+  line-height: 64px;
+  padding-right: 24px;
+  text-align: right;
+}
+
+.q1-avatar{
+  background-color: #1890ff;
+}
+
+.q1-navbar-menu{
+  width: 100px;
+  .anticon{
+    margin-right: 10px;
+  }
+}
+.q1-dropdown{
+  display: inline-block;
+  position: relative;
+  color:rgba(255, 255, 255, 0.65);
+  strong{
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 3px;
+  }
+}
