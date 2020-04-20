@@ -1,0 +1,15 @@
+{
+  "type": "mysql",
+  "host": "172.16.126.30",
+  "port": 3306,
+  "username": "root",
+  "password": "mysql",
+  "database": "bk",
+  "synchronize": true,
+  "logging": false,
+  "entities": [
+    "app/entity/**/*.ts"
+  ],
+  "migrations": [],
+  "subscribers": []
+}
