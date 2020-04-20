@@ -6,11 +6,12 @@ import { MenuProps } from "antd/lib/menu";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { RouteConfig } from '@/routes';
 import { RoutesContext } from '@/context'
+import SVGIcon from "@/components/SvgIcon";
 
 const { Item, SubMenu } = Menu;
 
 export interface RoutesMenuProps extends MenuProps {
-  prepend?: React.ReactNode[]
+  prepend?: React.ReactNode[],
 }
 
 export default function RoutesMenu (props: RoutesMenuProps) {
@@ -21,14 +22,18 @@ export default function RoutesMenu (props: RoutesMenuProps) {
     function _transformRoutes(routes: RouteConfig[]) {
       return routes.filter(route => !route.hidden).map((route) => {
         const key = route.absPath;
+        const titleNode = route.icon ? <><SVGIcon className="anticon" fill="white" name={route.icon}/><span>{route.title}</span></> : (
+          typeof route.title === 'string' ? <span>{route.title}</span>
+            : route.title
+        );
+
         if (!route.routes || route.routes.length <= 0) {
           // 没有子路由
-          return <Item key={key}><Link to={route.absPath}>{route.title}</Link></Item>
+          return <Item key={key}><Link to={route.absPath}>{titleNode}</Link></Item>
         }
-
         return <SubMenu
           key={route.absPath}
-          title={route.title}
+          title={titleNode}
           onTitleClick={( {key, domEvent} ) => {
             if (route.component) {
               history.push(route.absPath);
@@ -43,10 +48,9 @@ export default function RoutesMenu (props: RoutesMenuProps) {
   props = Object.assign({
     mode: 'inline',
     theme: 'dark'
-  }, props);
-
+  }, props)
   return (
-    <Menu {...props} selectedKeys={[location.pathname]} >
+    <Menu {...props} selectedKeys={[location.pathname]}>
       { props.prepend || null }
       { routesMenuItems }
     </Menu>

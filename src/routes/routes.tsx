@@ -7,6 +7,7 @@ import {
 
 interface ConfigurableRoute {
   path: string,
+  icon?: string,
   title: string | React.ReactNode,
   hidden?: boolean,
   component?: React.FunctionComponent | React.ComponentClass,
@@ -16,29 +17,33 @@ interface ConfigurableRoute {
 const configurableRoutes: ConfigurableRoute[] = [
   {
     path: "/",
-    title: <><HomeOutlined></HomeOutlined><span>首页</span></>,
+    icon: 'home',
+    title: '首页',
     component: page,
   },
   {
-    path: "/login",
-    title: <><HomeOutlined></HomeOutlined><span>登录</span></>,
+    path: "/login/:id",
+    title: '登录',
     component: page,
     hidden: true,
   },
   {
     path: "/devops",
-    title: <><UserOutlined /><span>DevOps</span></>,
+    icon: 'user',
+    title: 'DevOps',
     component: page,
   },
   {
     path: "/mine",
-    title: <><UserOutlined /><span>我的告警</span></>,
+    icon: 'user',
+    title: '我的告警',
     routes: [
       {
         path: "unhandle",
+        icon: 'rule',
         title: "未处理",
         component: page,
-      }
+      },
     ]
   },
   {

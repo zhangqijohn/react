@@ -4,6 +4,7 @@ import configurableRoutes from './routes'
 
 export interface RouteConfig {
   path: string,
+  icon?: string,
   title: string | React.ReactNode,
   absPath: string,
   hidden: boolean,
