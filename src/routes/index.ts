@@ -3,13 +3,14 @@ import React from 'react';
 import configurableRoutes from './routes'
 
 export interface RouteConfig {
-  path: string,
-  icon?: string,
-  title: string | React.ReactNode,
-  absPath: string,
-  hidden: boolean,
-  component: React.FunctionComponent | React.ComponentClass,
-  routes?: Array<RouteConfig>,
+  path: string;
+  icon?: string;
+  title: string | React.ReactNode;
+  absPath: string;
+  hidden: boolean;
+  component: React.FunctionComponent | React.ComponentClass;
+  routes?: Array<RouteConfig>;
+  parent: RouteConfig | null;
 }
 
 export interface RouteFilterFn {
@@ -31,11 +32,13 @@ function iterateRoutes(routes: RouteConfig[], cb: (currentRoute: RouteConfig, pa
 
 const routes: RouteConfig[] = configurableRoutes as unknown as RouteConfig[];
 
+// 将配置的路由转化成运行时数据
 iterateRoutes(routes, (currentRoute, parentRoute) => {
   currentRoute.absPath = parentRoute != null ?
   parentRoute.absPath.replace(/\/$/, '') + '/' + currentRoute.path
   : '/' + currentRoute.path.replace(/^\//, '');
   currentRoute.hidden = Boolean(currentRoute.hidden);
+  currentRoute.parent = parentRoute || null;
 });
 
 export function filterRoutes(filterFn: RouteFilterFn) {

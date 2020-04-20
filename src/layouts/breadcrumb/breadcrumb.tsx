@@ -9,31 +9,41 @@ export interface BreadcrumbProps {
 
 }
 
+export interface BreadcrumbPropsPathType {
+  path: string,
+  route: RouteConfig | null;
+  component: React.FunctionComponent | React.ComponentClass | null;
+}
+
 export default function (props: BreadcrumbProps) {
   const location = useLocation();
-  const pathSnippets = location.pathname.split('/').filter(i => i);
   const routesMap = useRoutesMap();
   const routeConfig = useRouteConfig();
-  const extraBreadcrumbItems = pathSnippets.map((current, index) => {
-    const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-    const route: RouteConfig | undefined = routesMap.get(url);
-    if (!route || !routeConfig) {
-      return <></>;
-    }
+  const paths: BreadcrumbPropsPathType[] = [ { path: location.pathname, component: null, route: routeConfig || null } ];
+  if (!routeConfig) {
+    return null;
+  }
+  let parentRoute = routeConfig.parent;
+  while (parentRoute != null) {
+    paths.unshift({ path: parentRoute.absPath, component: parentRoute.component, route: parentRoute } );
+    parentRoute = parentRoute.parent;
+  }
+  if (paths[0].path !== '/') {
+    const homeRoute = routesMap.get('/');
+    paths.unshift(
+      { path: '/', component: homeRoute?.component || null, route: homeRoute || null }
+    );
+  }
+  const breadcrumbItems = paths.map(({ path, component, route }, index) => {
     return (
-      <Breadcrumb.Item key={url}>
+      <Breadcrumb.Item key={path}>
         {
-          route.component == null || routeConfig.path === route?.path ? <span>{route!.title}</span>
-            : <Link to={url}>{route.title}</Link>
+          component == null  ? <span>{route!.title}</span>
+            : <Link to={path}>{route!.title}</Link>
         }
       </Breadcrumb.Item>
     );
   });
-  const breadcrumbItems = [
-    <Breadcrumb.Item key="home">
-      <Link to="/">{ routesMap.get('/')!.title }</Link>
-    </Breadcrumb.Item>,
-  ].concat(extraBreadcrumbItems);
   return (
     <Breadcrumb className="bread-crumb">{breadcrumbItems}</Breadcrumb>
   );

@@ -1,6 +1,7 @@
-import React, { useCallback, useRef, useEffect, useState, useMemo, useLayoutEffect } from 'react';
+import React, { useCallback, useRef, useEffect, useState, useMemo, useLayoutEffect } from 'react'
+import './index.css'
 import { Scrollbars } from 'react-custom-scrollbars';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { Tag, Space, Menu } from 'antd';
 import { useRoutesMap, useRouteConfig } from '@/context';
 import { RouteConfig } from '@/routes';
@@ -24,12 +25,7 @@ function TabsMenu(props: TabsMenuProps) {
     focusRef.current!.focus();
   }, []);
   return (
-    <div
-        ref={ focusRef }
-        tabIndex={ 0 }
-        onBlur={ props.onMenuClose}
-        style={{ outline: 'none', position: 'absolute', zIndex: 1, left: realX + 'px', top: realY + 'px', } }
-    >
+    <div ref={focusRef} tabIndex={0} onBlur={props.onMenuClose} style={{ outline: 'none', position: 'absolute', zIndex: 1, left: realX + 'px', top: realY + 'px', }}>
       <Menu selectedKeys={[]}>
         <Menu.Item onClick={props.onCloseTag}>关闭</Menu.Item>
         <Menu.Item onClick={props.onCloseOtherTag}>关闭其他</Menu.Item>
@@ -58,8 +54,10 @@ export default function Tabs (props: TabsProps) {
     y: 0,
   });
   const [ tabs, setTabs ] = useState<Array<string>>([]);
+  const [ pathnames, setPathnames ] = useState<Array<string>>([]);
   const routesMap = useRoutesMap();
-  const history = useHistory();
+  const location = useLocation();
+  const histroy = useHistory();
   const route = useRouteConfig();
   const blackList = props.blackList || ['/*'];
   useEffect(() => {
@@ -73,12 +71,20 @@ export default function Tabs (props: TabsProps) {
     ) {
       return;
     }
-    if (!tabs.includes(route.absPath)) {
+    let tabI = tabs.indexOf(route.absPath);
+    if (tabI === -1) {
       setTabs([ ...tabs, route.absPath ]);
+      setPathnames([ ...pathnames, location.pathname ])
+    } else {
+      if (pathnames[tabI] !== location.pathname) {
+        const newPathnames = [ ...pathnames ];
+        newPathnames[tabI] = location.pathname;
+        setPathnames([ ...newPathnames ]);
+      }
     }
-  }, [ route, tabs, blackList ]);
+  }, [ route, tabs, blackList, location, pathnames ]);
   useLayoutEffect(() => {
-    // 校正滚动条位置
+    // 校正滚动条位置。
     if (!route) {
       return;
     }
@@ -136,23 +142,26 @@ export default function Tabs (props: TabsProps) {
       return;
     }
     const newTags = [ ...tabs ];
+    const newPaths = [ ...pathnames ];
     newTags.splice(index, 1);
     setTabs(newTags);
+    setPathnames(newPaths)
     handleCloseMenu();
     if (newTags.length > 0) {
       if (tag !== route?.absPath) {
+        // 不是关闭当前标签，什么都不做
         return;
       }
       const nearestIndex = Math.min(
         Math.max(index - 1, 0),
         newTags.length - 1
       );
-      history.push(newTags[nearestIndex]);
+      histroy.push(newTags[nearestIndex]);
     }
     if (newTags.length === 0) {
-      history.replace('/')
+      histroy.replace('/')
     }
-  }, [ tabs, history, handleCloseMenu, route ]);
+  }, [ tabs, histroy, handleCloseMenu, route, pathnames ]);
   const handleCloseOther = useCallback((tag: string) => {
     const index = tabs.indexOf(tag);
     if (index === -1) {
@@ -160,17 +169,20 @@ export default function Tabs (props: TabsProps) {
     }
     const newTabs = [tabs[index]];
     setTabs(newTabs);
-    history.replace(newTabs[0]);
+    setPathnames([pathnames[index]]);
+    histroy.replace(newTabs[0]);
     handleCloseMenu();
-  }, [ tabs, history, handleCloseMenu ])
+  }, [ tabs, histroy, handleCloseMenu, pathnames ])
   const handleCloseAll = useCallback(() => {
     setTabs([])
-    history.replace('/');
+    setPathnames([])
+    histroy.replace('/');
     handleCloseMenu();
-  }, [ history, handleCloseMenu ])
+  }, [ histroy, handleCloseMenu ])
   const handleTagClick = useCallback((tag: string) => {
-    history.push(tag);
-  }, [ history ]);
+    const tagI = tabs.indexOf(tag);
+    histroy.push(pathnames[tagI]);
+  }, [ histroy, tabs, pathnames ]);
   const handleOpenMenu = useCallback((e: React.MouseEvent, tag?: string) => {
     e.preventDefault();
     setIsViewingMenu({
@@ -187,7 +199,7 @@ export default function Tabs (props: TabsProps) {
       return routeForTag ? (
         <Tag
           key={tag}
-          closable={ !(tabs.length === 1 && routeForTag.absPath === '/') }
+          closable={ tabs.length === 1 && routeForTag.absPath === '/' ? false : true }
           color={ route?.absPath === routeForTag.absPath ? "#1890ff" : undefined}
           onClick={e => handleTagClick(tag)}
           onClose={(e: React.MouseEvent) => {
@@ -222,7 +234,7 @@ export default function Tabs (props: TabsProps) {
             onCloseTag={() => handleCloseTab(viewingMenu.tag as string)}
             onCloseOtherTag={() => handleCloseOther(viewingMenu.tag as string)}
             onCloseAllTag={handleCloseAll}
-          />
+          ></TabsMenu>
           : null }
     </div>
   );
