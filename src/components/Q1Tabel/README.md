@@ -2,7 +2,7 @@
 
 ## 安装依赖
 ```javascript
-npm insatll -s react-dnd react-dnd-html5-backend immutability-helper
+npm install -s react-dnd react-dnd-html5-backend immutability-helper
 ```
 
 ## 使用方法：
@@ -10,7 +10,7 @@ npm insatll -s react-dnd react-dnd-html5-backend immutability-helper
 <!-- Table.tsx -->
 import React from 'react';
 import Q1Tabel from '@/components/Q1Tabel' //引入Q1Tabel组件
-import {ColumnPropsSwith} from "@/components/Q1Tabel/Q1Table"; //引入类型验证
+// import {ColumnPropsSwith} from "@/components/Q1Tabel/Q1Table"; //引入类型验证
 
 const datas = [{
   "id": "1",
@@ -29,7 +29,7 @@ const datas = [{
 }
 ]
 
-const defaultColumnsData: ColumnPropsSwith[] = [
+const defaultColumnsData = [
   {
     dataIndex: 'serverId',
     title: '游戏世界',

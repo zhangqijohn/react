@@ -47,12 +47,12 @@ const DragableBodyRow = ({index, moveRow, className, style, ...restProps}: any):
 
 function DragSortingTable(props: PropsType) {
   const originDate = props.columns // 保存原始数据
-  const originDateKeys = originDate.length && originDate.map((item: any) => {
+  const originDateKeys = (originDate.length && originDate.map((item: any) => {
     if (item.switch) {
       return item.dataIndex
     }
     return []
-  }) || [] // 获取原始数据已选中的值
+  })) || [] // 获取原始数据已选中的值
   const [data, setData] = useState(originDate)
   const [selectedRowKeys, setSelectedRowKeys] = useState(originDateKeys)
 

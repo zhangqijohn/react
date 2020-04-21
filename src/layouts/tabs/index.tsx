@@ -177,10 +177,11 @@ export default function Tabs (props: TabsProps) {
       isViewing: true,
     })
   }, [ setIsViewingMenu ]);
-  
+
   const TagItems = useMemo(() => {
     return Array.from(tabs).map(tag => {
       const routeForTag: RouteConfig | undefined = routesMap.get(tag);
+      console.log(tag);
       return routeForTag ? (
         <Tag
           key={tag}
@@ -201,7 +202,7 @@ export default function Tabs (props: TabsProps) {
         </Tag>
       ) : null;
     });
-    
+
   }, [ tabs, routesMap, handleCloseTab, handleTagClick, route, handleOpenMenu ]);
   return (
     <div ref={containerRef} style={{ position: 'relative', margin: '5px' }}>
