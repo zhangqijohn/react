@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect, useState, useMemo, useLayoutEffect } from 'react'
-import './index.css'
+import './tab.scss'
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useHistory, useLocation } from 'react-router';
 import { Tag, Space, Menu } from 'antd';
