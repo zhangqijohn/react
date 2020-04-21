@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useMemo } from 'react';
 
 import { Menu } from 'antd'
@@ -7,6 +7,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { RouteConfig } from '@/routes';
 import { RoutesContext, useRouteConfig } from '@/context'
 import SVGIcon from "@/components/SvgIcon";
+import { uniq } from 'lodash'
 
 const { Item, SubMenu } = Menu;
 
@@ -19,15 +20,6 @@ export default function RoutesMenu (props: RoutesMenuProps) {
   const history = useHistory();
   const location = useLocation();
   const routeConfig = useRouteConfig();
-  const defaultOpenKeys = useMemo(() => {
-    const parentRoutes = [];
-    let cur = routeConfig!.parent;
-    while (cur != null) {
-      parentRoutes.push(cur.path);
-      cur = cur.parent;
-    }
-    return parentRoutes;
-  }, [ routeConfig ]);
   const routesMenuItems = useMemo(() => {
     function _transformRoutes(routes: RouteConfig[]) {
       return routes.filter(route => !route.hidden).map((route) => {
@@ -59,8 +51,22 @@ export default function RoutesMenu (props: RoutesMenuProps) {
     mode: 'inline',
     theme: 'dark'
   }, props)
+  const [ openKeys, setOpenKeys ] = useState<string[]>([]);
+  const handleMenuOpenChange = useCallback((openKeys: string[]) => {
+    setOpenKeys(openKeys);
+  }, []);
+  useEffect(() => {
+    const parentRoutes = [];
+    let cur = routeConfig!.parent;
+    while (cur != null) {
+      parentRoutes.push(cur.path);
+      cur = cur.parent;
+    }
+    handleMenuOpenChange(uniq([ ...openKeys, ...parentRoutes ]));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ handleMenuOpenChange, routeConfig ]);
   return (
-    <Menu {...props} defaultOpenKeys={defaultOpenKeys} selectedKeys={[location.pathname]}>
+    <Menu {...props} openKeys={openKeys} selectedKeys={[location.pathname]} onOpenChange={handleMenuOpenChange}>
       { props.prepend || null }
       { routesMenuItems }
     </Menu>
