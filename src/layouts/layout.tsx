@@ -1,5 +1,4 @@
 import React from "react";
-import "./layout.css";
 import { Layout, Menu, Dropdown, Avatar } from 'antd';
 import {
     MenuUnfoldOutlined,
@@ -7,11 +6,12 @@ import {
     UserOutlined,
     HomeOutlined, LogoutOutlined, DownOutlined
 } from '@ant-design/icons';
-import FooterComponent from "./footer";
-import Sider from './sider'
-import Content from './content'
-import BreadCrumb from './breadcrumb'
-import Tabs from './tabs'
+import FooterComponent from "./footer/footer";
+import Sider from './sider/sider'
+import Content from './content/content'
+import BreadCrumb from './breadcrumb/breadcrumb'
+import Tabs from './tabs/tab'
+import "./layout.scss";
 
 const { Header } = Layout;
 
@@ -53,7 +53,7 @@ class LayoutComponent extends React.Component<any, any> {
             <div className="q1-container">
                 <Layout>
                     <Sider collapsed={this.state.collapsed} />
-                    <Layout className="site-layout">
+                    <Layout className="q1-main">
                         <Header className="q1-header" style={{ padding: 0 }}>
                             <div
                                 className="q1-header__trigger"
@@ -61,7 +61,7 @@ class LayoutComponent extends React.Component<any, any> {
                             >
                                 { React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined) }
                             </div>
-                            <BreadCrumb></BreadCrumb>
+                            <BreadCrumb />
                             <div className="q1-dropdown">
                                 <Dropdown overlay={ this.menu }>
                                     <div className="q1-dropdown__container">
@@ -72,8 +72,8 @@ class LayoutComponent extends React.Component<any, any> {
                                 </Dropdown>
                             </div>
                         </Header>
-                        <Tabs></Tabs>
-                        <Content></Content>
+                        <Tabs />
+                        <Content />
                         <FooterComponent />
                     </Layout>
                 </Layout>
@@ -82,4 +82,4 @@ class LayoutComponent extends React.Component<any, any> {
     }
 }
 
-export default LayoutComponent
+export default LayoutComponent;

@@ -1,0 +1,7 @@
+.svg-icon {
+  display: inline-block;
+  &>div {
+    width: 100%;
+    height: 100%;
+  }
+}

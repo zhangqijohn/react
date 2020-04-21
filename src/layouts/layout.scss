@@ -1,0 +1,73 @@
+.q1-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.q1-container .logo{
+  flex: 2 0;
+  height:64px;
+  line-height: 64px;
+  text-align: center;
+  overflow: hidden;
+  cursor: pointer;
+  h1{
+    display: inline-block;
+    color:rgba(255, 255, 255, 0.65);
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    animation: fade-in;
+    animation-duration: 0.3s;
+    margin: 0 0 0 12px;
+  }
+  img{
+    display: inline-block;
+    width: 30px;
+    vertical-align: middle;
+  }
+}
+
+.q1-header {
+  display: flex;
+  background: #fff;
+}
+.q1-header__trigger {
+  height: 64px;
+  padding: 0 24px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s, padding 0s;
+}
+.q1-dropdown {
+  flex: 23 0;
+  line-height: 64px;
+  padding-right: 24px;
+  text-align: right;
+}
+.q1-dropdown__container{
+  width: 100px;
+  display: inline-block;
+  position: relative;
+  color:#666;
+}
+.q1-dropdown__menu .anticon{
+  margin-right: 10px;
+}
+.q1-username{
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 3px;
+}
+.q1-avatar{
+  background-color: #1890ff;
+}
+.q1-main{
+  margin-left: 200px;
+  transition: margin-left .2s;
+}
+
+.ant-layout-sider-collapsed+.q1-main {
+  margin-left: 80px;
+}

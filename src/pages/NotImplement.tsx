@@ -1,12 +1,10 @@
 import { Alert } from 'antd'
 import React from 'react';
-import { ReactSVG } from 'react-svg'
+import { useRouteConfig } from '@/context'
 
 export default function() {
+  const route = useRouteConfig();
   return (
-    <div>
-
-      <ReactSVG src="svg.svg"></ReactSVG>
-    </div>
+    <Alert message={<>{route?.title}</>} type="warning" />
   );
 }

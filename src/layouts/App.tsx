@@ -23,7 +23,6 @@ function App() {
         <RoutesContext.Provider value={appRoutes}>
             <Router>
                 <Layout/>
-                {/* <Route path="*" component={NotFound}></Route> */}
             </Router>
         </RoutesContext.Provider>
     );
