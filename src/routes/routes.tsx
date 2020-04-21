@@ -1,9 +1,9 @@
 import React from 'react';
 import page from '@/pages/NotImplement';
 import NotFount from '@/pages/NotFount';
-import {
-  UserOutlined, HomeOutlined
-} from '@ant-design/icons';
+import Q1Table from '@/pages/Q1Table';
+import IconHandle from '@/pages/Icon/IconHandle';
+import Q1Form from '@/pages/Q1Form';
 
 interface ConfigurableRoute {
   path: string,
@@ -28,24 +28,31 @@ const configurableRoutes: ConfigurableRoute[] = [
     hidden: true,
   },
   {
-    path: "/devops",
-    icon: 'user',
-    title: 'DevOps',
-    component: page,
-  },
-  {
-    path: "/mine",
-    icon: 'user',
-    title: '我的告警',
+    path: "/icon",
+    icon: 'config',
+    title: '图标',
     routes: [
       {
-        path: "unhandle",
+        path: "handle",
         icon: 'rule',
-        title: "未处理",
-        component: page,
+        title: "自定义图标",
+        component: IconHandle,
       },
     ]
   },
+  {
+    path: "/q1-tabel",
+    icon: 'app',
+    title: '表格',
+    component: Q1Table,
+  },
+  {
+    path: "/q1-form",
+    icon: 'app',
+    title: '表单',
+    component: Q1Form,
+  },
+
   {
     path: '*',
     title: 'Not Found',

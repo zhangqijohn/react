@@ -9,6 +9,7 @@ import {ColumnPropsSwith, fixedType, PropsType} from './Q1Table'
 
 const type = 'DragbleBodyRow';
 
+
 const DragableBodyRow = ({index, moveRow, className, style, ...restProps}: any): any => {
   const ref = React.useRef();
   const [{isOver, dropClassName}, drop] = useDrop({
@@ -94,7 +95,7 @@ function DragSortingTable(props: PropsType) {
       setSelectedRowKeys(selectedRowKeys);
       const modifyData = data.map(orig => {
         orig.switch = 0
-        selectedRowKeys.map(modify => {
+        selectedRowKeys.forEach(modify => {
           if (orig.dataIndex === modify) {
             orig.switch = 1
           }
@@ -138,14 +139,14 @@ function DragSortingTable(props: PropsType) {
   // 重置
   const resetSortTable = () => {
     const resetKeys: any[] = []
-    const resetArr: ColumnPropsSwith[] = originDate.length && originDate.map(item => {
+    const resetArr: ColumnPropsSwith[] = (originDate.length && originDate.map(item => {
       resetKeys.push(item.dataIndex)
       return {
         ...item,
         switch: 1,
         fixed: undefined
       }
-    }) || []
+    })) || []
     setSelectedRowKeys(resetKeys)
     setData(resetArr)
   }
@@ -159,7 +160,7 @@ function DragSortingTable(props: PropsType) {
     {
       dataIndex: 'action',
       title: () => {
-        return (<a onClick={resetSortTable}>重置</a>)
+        return <span onClick={resetSortTable} style={{color: '#096dd9',cursor: 'pointer'}}>重置</span>
       },
       render: (text: any, recored: ColumnPropsSwith, rowIndex: number) =>
         <>

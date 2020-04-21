@@ -11,7 +11,7 @@ export const sizeOptions: SizeValType[] = [
 ]
 
 
-const Q1Tabel = (props: Q1TablePropsType) => {
+const Q1Table = (props: Q1TablePropsType) => {
   // 过滤原始数据，清除switch为0或者不存在的
   const {columns, size, dataSource, showHeaderRightTool} = {...props}
   const columnsQ1Trans = (columns && columns.length && columns.filter(
@@ -28,13 +28,13 @@ const Q1Tabel = (props: Q1TablePropsType) => {
     <Menu selectedKeys={[sizeQ1]}>
       {sizeOptions.map(item => (
         <Menu.Item key={item.value}>
-          <a
+          <span
             onClick={() => {
               setSizeQ1(item.value)
             }}
           >
             {item.label}
-          </a>
+          </span>
         </Menu.Item>
       ))}
     </Menu>
@@ -97,4 +97,4 @@ const Q1Tabel = (props: Q1TablePropsType) => {
   )
 }
 
-export default Q1Tabel
+export default Q1Table

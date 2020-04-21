@@ -1,21 +1,37 @@
 import './SvgIcon.scss'
 import React from 'react';
-import { ReactSVG } from 'react-svg'
+import {ReactSVG} from 'react-svg'
 import SvgDict from '@/icons'
 
 export interface SVGIconProps {
-  name: string;
-  className?: string;
-  fill?: string;
+    name: string;
+    className?: string;
+    fill?: string;
+    size?: number;
+    marginRight?: number;
 }
 
-export default function SVGIcon(props: SVGIconProps) {
-  const path = (SvgDict as any)[props.name];
-  const width = '1em', height = '1em';
-  const fill = props.fill || 'black';
-  return <ReactSVG wrapper="div" src={path} style={{ width, height }} className={"svg-icon " + (props.className || '')} beforeInjection={svg => {
-    svg.setAttribute('width', width);
-    svg.setAttribute('height', height);
-    svg.setAttribute('style', `fill: ${fill}`)
-  }}></ReactSVG>
+function SvgIcon(props:SVGIconProps) {
+    const path = (SvgDict as any)[props.name];
+    const size = props.size ? props.size : '1em'
+    const marginRight = props.marginRight ? props.marginRight : 8
+    const fill = props.fill || 'currentColor';
+    return (
+        <ReactSVG
+            wrapper="span"
+            src={path}
+            className={"svg-icon " + (props.className || '')}
+            beforeInjection={svg => {
+                svg.classList.add('svg-class-name')
+                svg.setAttribute('style', `
+                    width: ${size};
+                    height: ${size};
+                    margin-right:${marginRight}px;
+                    fill:${fill};
+                `)
+            }}
+        />
+    )
 }
+
+export default SvgIcon

@@ -1,4 +1,4 @@
-# Q1Tabel组件说明
+# Q1Table组件说明
 
 ## 安装依赖
 ```javascript
@@ -9,8 +9,8 @@ npm install -s react-dnd react-dnd-html5-backend immutability-helper
 ```javascript
 <!-- Table.tsx -->
 import React from 'react';
-import Q1Tabel from '@/components/Q1Tabel' //引入Q1Tabel组件
-// import {ColumnPropsSwith} from "@/components/Q1Tabel/Q1Table"; //引入类型验证
+import Q1Table from '@/components/Q1Table' //引入Q1Table组件
+// import {ColumnPropsSwith} from "@/components/Q1Table/Q1Table"; //引入类型验证
 
 const datas = [{
   "id": "1",
@@ -68,7 +68,7 @@ const TableDemo = () => {
     )
   return (
     <>
-      <Q1Tabel
+      <Q1Table
         bordered
         size='small'
         rowKey="id"

@@ -6,7 +6,7 @@ import { MenuProps } from "antd/lib/menu";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { RouteConfig } from '@/routes';
 import { RoutesContext, useRouteConfig } from '@/context'
-import SVGIcon from "@/components/SvgIcon";
+import SvgIconBk from "@/components/SvgIcon";
 import { uniq } from 'lodash'
 
 const { Item, SubMenu } = Menu;
@@ -24,7 +24,7 @@ export default function RoutesMenu (props: RoutesMenuProps) {
     function _transformRoutes(routes: RouteConfig[]) {
       return routes.filter(route => !route.hidden).map((route) => {
         const key = route.absPath;
-        const titleNode = route.icon ? <><SVGIcon className="anticon" fill="white" name={route.icon}/><span>{route.title}</span></> : (
+        const titleNode = route.icon ? <><SvgIconBk className="anticon" fill="white" name={route.icon}/><span>{route.title}</span></> : (
           typeof route.title === 'string' ? <span>{route.title}</span>
             : route.title
         );

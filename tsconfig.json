@@ -24,6 +24,11 @@
     "src"
   ],
   "exclude": [
-    "server"
+    "node_modules",
+    "build",
+    "dist",
+    "scripts",
+    "webpack",
+    "jest"
   ]
 }

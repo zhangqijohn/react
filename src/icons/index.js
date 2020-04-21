@@ -1,9 +1,10 @@
 const SvgDict = {};
 
-const requireAll = requireContext => requireContext.keys().map((filePath) => {
-  return (SvgDict[filePath.replace(/^\.\/|\.svg$/g, '')] = requireContext(filePath))
+const path = require('path')
+const files = require.context('./svg', false, /\.svg$/)
+files.keys().forEach(key => {
+  const name = path.basename(key, '.svg')
+  SvgDict[name] = files(key).default || files(key)
 })
-const req = require.context('./svg', false, /\.svg$/)
-requireAll(req);
 
 export default SvgDict;
