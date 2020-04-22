@@ -1,6 +1,7 @@
-import React from 'react'
-import { Form, Button} from 'antd';
-import Q1Form, {JsonType} from '@/components/Q1Form'
+import React, {useState} from 'react'
+import { Form, Button, Drawer, Row, Col} from 'antd';
+import Q1DataEntry, {JsonType} from '@/components/Q1DataEntry'
+import Q1EditableTable from '@/components/Q1DataEntry/Q1EditableTable'
 
 const json: JsonType[] = [
     {
@@ -10,13 +11,7 @@ const json: JsonType[] = [
         templateType: 'input',
         rules: [{ required: true, message: '请输入用户名!' }],
         params: {
-            addonAfter: '',
-            addonBefore: '',
-            defaultValue: '',
-            maxLength: 12,
-            prefix: '',
-            suffix: '',
-            placeholder: '请输入用户名',
+            defaultValue: 'john',
         },
     },
     {
@@ -24,9 +19,8 @@ const json: JsonType[] = [
         label: '密码',
         name: 'password',
         templateType: 'password',
-        params: {
-
-        }
+        // rules: [{ required: true, message: 'Please input your password!' }],
+        params: {}
     },
     {
         id: 2,
@@ -34,12 +28,12 @@ const json: JsonType[] = [
         name: 'reason',
         templateType: 'textarea',
         params: {
+            disabled: false,
             addonAfter: 'After',
             addonBefore: 'Before',
             defaultValue: '',
             maxLength: 2,
             prefix: '￥',
-            size: 'large',
             suffix: 'RMB',
             placeholder: '请输入',
             row: 6,
@@ -51,22 +45,23 @@ const json: JsonType[] = [
         name: 'money',
         templateType: 'input',
         params: {
+            disabled: false,
             addonAfter: 'After',
             addonBefore: 'Before',
             defaultValue: '13',
             maxLength: 12,
             prefix: '￥',
-            size: 'large',
             suffix: 'RMB',
             placeholder: '请输入',
         },
     },
     {
         id: 4,
-        label: '评分rate',
+        label: 'rate评分',
         name: 'rate',
         templateType: 'rate',
         params: {
+            disabled: false,
             defaultValue: 2,
             allowClear: true,
             allowHalf: true,
@@ -74,15 +69,30 @@ const json: JsonType[] = [
     },
     {
         id: 5,
-        label: '性别',
+        label: 'radio单选框',
         name: 'radio',
         templateType: 'radio',
         params: {
+            disabled: false,
             defaultValue: 'male',
-            radioOption: [
+            options: [
                 { label: '男', value: 'male' },
                 { label: '女', value: 'female' },
             ]
+        },
+    },
+    {
+        id: 12,
+        label: 'Checkbox多选框',
+        name: 'checkbox',
+        templateType: 'checkbox',
+        params: {
+            options: [
+                { label: 'Apple', value: 'Apple' },
+                { label: 'Pear', value: 'Pear' },
+                { label: 'Orange', value: 'Orange', disabled: false },
+            ],
+            defaultValue: ['Apple']
         },
     },
     {
@@ -91,9 +101,9 @@ const json: JsonType[] = [
         name: 'switch',
         templateType: 'switch',
         params: {
-            defaultChecked: true,
+            defaultValue: true,
             sizeSwitch: 'small',
-            disabled: true,
+            disabled: false,
         },
     },
     {
@@ -106,19 +116,67 @@ const json: JsonType[] = [
             vertical: false,
             step: 1,
             range: false,
-            defaultValue: '22',
+            defaultValue: 22,
             tooltipVisible: true,
         },
     },
+    {
+        id: 8,
+        label: 'Select选择器',
+        name: 'select',
+        templateType: 'select',
+        params: {
+            // 对数据的要求，
+            options: [
+                { label: '苹果', value: 'Apple' },
+                { label: '梨', value: 'Pear' },
+                { label: '橘子', value: 'Orange'},
+                { label: '香蕉', value: 'Banana'},
+            ],
+            mode: 'multiple', // 多选
+            defaultValue: ['Apple'], // 多选时为数组
+            placeholder: 'multiple请选择',
+            disabled: false,
+            allowClear: true,
+            maxTagCount: 1, // 最大标签个数
+            maxTagTextLength: 4, // 单个标签最大字数
+            showSearch: true,
+            showArrow: true,
+        },
+    },
+    {
+        id: 9,
+        label: 'TimePicker时间选择框',
+        name: 'timePicker',
+        templateType: 'timePicker',
+        params: {
+            defaultValue: '16:04:21'
+        },
+    },
+    {
+        id: 11,
+        label: 'DatePicker日期选择框',
+        name: 'datePicker',
+        templateType: 'datePicker',
+        params: {
+            defaultValue: '2020/04/21'
+        },
+    },
+
 ]
 
+const initValues:any = {}
+json.forEach((item: JsonType) => {
+    initValues[item.name] = item.params && item.params.defaultValue
+})
 
 function FormHandle() {
+    const [showDrawer, setShowDrawer] = useState(false)
     const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
+        console.log(e);
     }
     const layout = {
-        labelCol: { span: 2 },
+        labelCol: { sm: 6, md: 4, xl: 3 },
         wrapperCol: { span: 8 },
     };
     const tailLayout = {
@@ -132,21 +190,29 @@ function FormHandle() {
         console.log('Failed:', errorInfo);
     };
 
-    const Ele = json[0].templateType
+    const [form] = Form.useForm();
     return (
         <>
-            {
-                json.map((i:JsonType)=>{
-                    let {templateType, params} = i
-                    const Elements = templateType
-                    console.log({...params});
-                    return (<Elements />)
-                })
-            }
+            <Button type="primary" onClick={()=>{setShowDrawer(true)}}>
+                表单规则
+            </Button>
+            <Drawer
+                title="表单规则"
+                width={'56%'}
+                placement="right"
+                closable={false}
+                onClose={() =>{setShowDrawer(false)}}
+                visible={showDrawer}
+            >
+                <Q1EditableTable data={json}></Q1EditableTable>
+            </Drawer>
+
             <Form
                 {...layout}
+                form={form}
                 name="basic"
-                initialValues={{ remember: true }}
+                layout='horizontal' // horizontal vertical inline
+                initialValues={initValues}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
@@ -158,14 +224,24 @@ function FormHandle() {
                             name={item.name}
                             rules={item.rules}
                         >
-                            <Q1Form {...item} onChange={changeValue}></Q1Form>
+                            <Q1DataEntry {...item} onChange={changeValue}></Q1DataEntry>
                         </Form.Item>)
                     })
                 }
                 <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
+                    <Row gutter={8}>
+                        <Col offset={3}>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button htmlType="reset" onClick={() => { form.resetFields() }}>
+                                Reset
+                            </Button>
+                        </Col>
+                    </Row>
+
                 </Form.Item>
             </Form>
         </>

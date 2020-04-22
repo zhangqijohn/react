@@ -4,6 +4,7 @@ import NotFount from '@/pages/NotFount';
 import Q1Table from '@/pages/Q1Table';
 import IconHandle from '@/pages/Icon/IconHandle';
 import Q1Form from '@/pages/Q1Form';
+import Test from '@/pages/test';
 
 interface ConfigurableRoute {
   path: string,
@@ -51,8 +52,16 @@ const configurableRoutes: ConfigurableRoute[] = [
     icon: 'app',
     title: '表单',
     component: Q1Form,
+    // abspath: '',
+    // parent: '',
+    // hidden: undefined
   },
-
+  {
+    path: "/test",
+    icon: 'app',
+    title: '测试使用',
+    component: Test,
+  },
   {
     path: '*',
     title: 'Not Found',

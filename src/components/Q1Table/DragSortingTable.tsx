@@ -59,6 +59,7 @@ function DragSortingTable(props: PropsType) {
 
 
   // 改变父级table排序
+  /* eslint-disable */
   useEffect(() => {
     if (props && props.colChange)
       props.colChange(data)
