@@ -1,76 +1,13 @@
 import React from 'react'
 import moment from 'moment'
-import {Checkbox, Input, Radio, Rate, Select, Slider, Switch, TimePicker, DatePicker} from 'antd'
+import {Checkbox, DatePicker, Input, Radio, Rate, Select, Slider, Switch, TimePicker} from 'antd'
 import locale from 'antd/es/date-picker/locale/zh_CN';
+import {
+    Q1DataEntryJsonType,
+    RadioOptionType,
+} from './index.d';
 
-export type SizeS = 'large' | 'middle' | 'small'
-export type SizeSwitch = 'default' | 'small'
-export type RadioOptionType = { label: string; value: number | string; [key: string]: any }
-
-export interface ParamsType {
-    addonAfter?: string | React.ReactNode
-    addonBefore?: string | React.ReactNode
-    defaultValue?: any
-    id?: string
-    maxLength?: number
-    prefix?: string | React.ReactNode
-    size?: SizeS | undefined
-    sizeSwitch?: SizeSwitch | undefined
-    suffix?: string | React.ReactNode
-    placeholder?: string
-    value?: string
-    disable?: boolean
-    allowClear?: boolean
-    autoSize?: boolean | { minRows: number; maxRows: number }
-    loading?: boolean
-    visibilityToggle?: boolean
-    radioOption?: RadioOptionType[]
-    allowHalf?: boolean
-    defaultChecked?: boolean
-    disabled?: boolean
-    vertical?: boolean
-    step?: number
-    tooltipVisible?: boolean
-    options?: any
-    mode?: 'multiple' | 'tags' /*select*/
-    maxTagCount?: number
-    maxTagTextLength?: number
-    showSearch?: boolean
-    showArrow?: boolean
-    [key: string]: any
-}
-
-export interface InputType {
-    params?: ParamsType
-    onChange?: (e: any) => void
-    onPressEnter?: (e: any) => void
-}
-
-export interface RulesType {
-    required?: boolean
-    message?: string
-}
-
-export interface SearchType extends InputType {
-    onSearch?: (e: any) => void
-}
-
-export interface TextareaType extends SearchType {
-    onChange?: (e: any) => void
-    onResize?: (e: any) => void
-}
-
-export interface JsonType extends TextareaType {
-    templateType: string
-    name: string
-    id: number
-    label?: string
-    rules?: Array<RulesType>
-    gameid?: number
-    permit?: boolean
-}
-
-function Index(props: JsonType) {
+function Index(props: Q1DataEntryJsonType) {
     const getType = () => {
         let {templateType, params, permit} = {...props}
         templateType = templateType.toLocaleLowerCase()
@@ -131,8 +68,10 @@ function Index(props: JsonType) {
             return <Slider disabled={disabled} vertical={vertical} step={step} defaultValue={defaultValue}
                            tooltipVisible={tooltipVisible} onChange={props.onChange}/>
         } else if (templateType === 'select') {
-            const {options, mode, size, placeholder, disabled, allowClear, maxTagCount,
-                maxTagTextLength, showSearch, showArrow} = {...params}
+            const {
+                options, mode, size, placeholder, disabled, allowClear, maxTagCount,
+                maxTagTextLength, showSearch, showArrow
+            } = {...params}
             return <Select
                 mode={mode}
                 size={size}
@@ -151,18 +90,18 @@ function Index(props: JsonType) {
                     })
                 }
             </Select>
-        }else if (templateType === 'timepicker') {
+        } else if (templateType === 'timepicker') {
             const {defaultValue, placeholder, size} = {...params}
-            const defaultValueTrans = defaultValue?moment(defaultValue, 'HH:mm:ss'): undefined
+            const defaultValueTrans = defaultValue ? moment(defaultValue, 'HH:mm:ss') : undefined
             return <TimePicker
                 locale={locale}
                 defaultValue={defaultValueTrans}
                 onChange={props.onChange}
                 placeholder={placeholder || '请选择时间'}
                 size={size}/>
-        }else if (templateType === 'datepicker') {
+        } else if (templateType === 'datepicker') {
             const {defaultValue, placeholder, size} = {...params}
-            const defaultValueTrans = defaultValue?moment(defaultValue, 'YYYY-MM-DD'): undefined
+            const defaultValueTrans = defaultValue ? moment(defaultValue, 'YYYY-MM-DD') : undefined
             return <DatePicker
                 locale={locale}
                 defaultValue={defaultValueTrans}

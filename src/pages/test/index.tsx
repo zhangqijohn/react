@@ -1,5 +1,6 @@
 import React from 'react'
 import {Checkbox, Form, Button, Input} from 'antd';
+import {useHistory, Link} from 'react-router-dom'
 
 const options = [
     {label: 'Apple', value: 'Apple'},
@@ -7,6 +8,7 @@ const options = [
     {label: 'Orange', value: 'Orange', disabled: false},
 ]
 const defaultValue = ['Apple']
+
 
 function Text() {
     // const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,8 +33,11 @@ function Text() {
         console.log('Failed:', errorInfo);
     };
 
+    const historyClick = useHistory();
     return (
         <div>
+            <Button onClick={()=>{historyClick.push('/')}}>historyClick</Button>
+            <Link to='/'></Link>
             <Form
                 {...layout}
                 name="basic"

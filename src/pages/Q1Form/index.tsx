@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import { Form, Button, Drawer, Row, Col} from 'antd';
-import Q1DataEntry, {JsonType} from '@/components/Q1DataEntry'
-import Q1EditableTable from '@/components/Q1DataEntry/Q1EditableTable'
+import Q1DataEntry from '@/components/Q1DataEntry'
+import {Q1DataEntryJsonType} from '@/components/Q1DataEntry/index.d'
+import EditableTable from '@/components/Q1DataEntry/EditableTable.tsx'
 
-const json: JsonType[] = [
+const json: Q1DataEntryJsonType[] = [
     {
         id: 0,
         label: '用户名',
@@ -166,7 +167,7 @@ const json: JsonType[] = [
 ]
 
 const initValues:any = {}
-json.forEach((item: JsonType) => {
+json.forEach((item: Q1DataEntryJsonType) => {
     initValues[item.name] = item.params && item.params.defaultValue
 })
 
@@ -193,6 +194,7 @@ function FormHandle() {
     const [form] = Form.useForm();
     return (
         <>
+            <EditableTable data={json}></EditableTable>
             <Button type="primary" onClick={()=>{setShowDrawer(true)}}>
                 表单规则
             </Button>
@@ -204,7 +206,7 @@ function FormHandle() {
                 onClose={() =>{setShowDrawer(false)}}
                 visible={showDrawer}
             >
-                <Q1EditableTable data={json}></Q1EditableTable>
+                <EditableTable data={json}></EditableTable>
             </Drawer>
 
             <Form

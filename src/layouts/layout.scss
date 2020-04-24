@@ -31,10 +31,13 @@
 
 .q1-header {
   display: flex;
+  height: 40px;
+  line-height: 40px;
   background: #fff;
+  border-bottom: 1px solid #ddd;
 }
 .q1-header__trigger {
-  height: 64px;
+  height: 40px;
   padding: 0 24px;
   font-size: 20px;
   cursor: pointer;
@@ -42,7 +45,7 @@
 }
 .q1-dropdown {
   flex: 23 0;
-  line-height: 64px;
+  line-height: 40px;
   padding-right: 24px;
   text-align: right;
 }

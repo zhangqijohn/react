@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useEffect, useState, useMemo, useLayoutEffect } from 'react'
-import './tab.scss'
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useHistory, useLocation } from 'react-router';
 import { Tag, Space, Menu } from 'antd';
@@ -192,7 +191,7 @@ export default function Tabs (props: TabsProps) {
       isViewing: true,
     })
   }, [ setIsViewingMenu ]);
-  
+
   const TagItems = useMemo(() => {
     return Array.from(tabs).map(tag => {
       const routeForTag: RouteConfig | undefined = routesMap.get(tag);
@@ -208,7 +207,7 @@ export default function Tabs (props: TabsProps) {
           onContextMenu={(e) => handleOpenMenu(e, tag)}
           style={{
             cursor: 'pointer',
-            padding: '5px 7px',
+            padding: '2px 10px',
             position: 'relative',
           }}
         >
@@ -216,10 +215,10 @@ export default function Tabs (props: TabsProps) {
         </Tag>
       ) : null;
     });
-    
+
   }, [ tabs, routesMap, handleCloseTab, handleTagClick, route, handleOpenMenu ]);
   return (
-    <div ref={containerRef} style={{ position: 'relative', margin: '5px' }}>
+    <div ref={containerRef} style={{ position: 'relative', padding: '5px', backgroundColor: '#fff' }}>
       <Scrollbars ref={scrollBarRef} autoHeight autoHide onWheel={handleScroll}>
         <Space size={2}>
           {TagItems}
