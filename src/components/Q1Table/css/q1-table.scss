@@ -1,0 +1,15 @@
+.q1-table-tool-row {
+    .q1-table-tool-row-left {
+        max-width: calc(1000%-200px);
+    }
+    .q1-table-tool-row-right {
+        text-align: right;
+        min-width: 200px;
+
+        .table-tools {
+            font-size: 16px;
+            margin-right: 16px;
+            padding-top: 8px;
+        }
+    }
+}

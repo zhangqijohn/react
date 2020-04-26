@@ -2,13 +2,14 @@ import React, { useCallback, useRef, useEffect, useState, useMemo, useLayoutEffe
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useHistory, useLocation } from 'react-router';
 import { Tag, Space, Menu } from 'antd';
-import { useRoutesMap, useRouteConfig } from '@/context';
+import { useRouteConfig } from '@/context'
 import { RouteConfig } from '@/routes';
+import {find, findIndex} from 'lodash'
 
 interface TabsMenuProps {
   x: number;
   y: number;
-  tag: string;
+  locationForTag: LocationType
   container: HTMLDivElement;
   onMenuClose?: React.EventHandler<any>;
   onCloseTag?: () => void;
@@ -17,224 +18,241 @@ interface TabsMenuProps {
 }
 
 function TabsMenu(props: TabsMenuProps) {
-  const focusRef = useRef<HTMLDivElement>(null);
-  const realX = props.x - props.container.offsetLeft;
-  const realY = props.y - props.container.offsetTop;
-  useEffect(() => {
-    focusRef.current!.focus();
-  }, []);
-  return (
-    <div ref={focusRef} tabIndex={0} onBlur={props.onMenuClose} style={{ outline: 'none', position: 'absolute', zIndex: 1, left: realX + 'px', top: realY + 'px', }}>
-      <Menu selectedKeys={[]}>
-        <Menu.Item onClick={props.onCloseTag}>关闭</Menu.Item>
-        <Menu.Item onClick={props.onCloseOtherTag}>关闭其他</Menu.Item>
-        <Menu.Item onClick={props.onCloseAllTag}>关闭所有</Menu.Item>
-      </Menu>
-    </div>
-  );
+    const focusRef = useRef<HTMLDivElement>(null)
+    const realX = props.x - props.container.offsetLeft
+    const realY = props.y - props.container.offsetTop
+    useEffect(() => {
+        focusRef.current!.focus()
+    }, [])
+    return (
+        <div
+            ref={focusRef}
+            tabIndex={0}
+            onBlur={props.onMenuClose}
+            style={{
+                outline: 'none',
+                position: 'absolute',
+                zIndex: 1,
+                left: realX + 'px',
+                top: realY + 'px',
+            }}
+        >
+            <Menu selectedKeys={[]}>
+                <Menu.Item onClick={props.onCloseTag}>关闭</Menu.Item>
+                <Menu.Item onClick={props.onCloseOtherTag}>关闭其他</Menu.Item>
+                <Menu.Item onClick={props.onCloseAllTag}>关闭所有</Menu.Item>
+            </Menu>
+        </div>
+    )
 }
 
 interface TabsProps {
   blackList?: Array<string | RegExp>,
 }
 
-export default function Tabs (props: TabsProps) {
-  const scrollBarRef = useRef<Scrollbars>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [ viewingMenu, setIsViewingMenu ] = useState<{
-    isViewing: boolean,
-    tag?: string,
-    x: number,
-    y: number,
-  }>({
-    isViewing: false,
-    tag: undefined,
-    x: 0,
-    y: 0,
-  });
-  const [ tabs, setTabs ] = useState<Array<string>>([]);
-  const [ pathnames, setPathnames ] = useState<Array<string>>([]);
-  const routesMap = useRoutesMap();
-  const location = useLocation();
-  const histroy = useHistory();
-  const route = useRouteConfig();
-  const blackList = props.blackList || ['/*'];
-  useEffect(() => {
-    if (!route) {
-      return;
-    }
-    if (
-      blackList.some(fn => (
-        typeof fn === 'string' ? fn === route.absPath :  fn.test(route.absPath)
-      ))
-    ) {
-      return;
-    }
-    let tabI = tabs.indexOf(route.absPath);
-    if (tabI === -1) {
-      setTabs([ ...tabs, route.absPath ]);
-      setPathnames([ ...pathnames, location.pathname ])
-    } else {
-      if (pathnames[tabI] !== location.pathname) {
-        const newPathnames = [ ...pathnames ];
-        newPathnames[tabI] = location.pathname;
-        setPathnames([ ...newPathnames ]);
-      }
-    }
-  }, [ route, tabs, blackList, location, pathnames ]);
-  useLayoutEffect(() => {
-    // 校正滚动条位置。
-    if (!route) {
-      return;
-    }
-    if (!scrollBarRef.current) {
-      return;
-    }
-    if (!containerRef.current) {
-      return;
-    }
-    const container = containerRef.current;
-    function isTagInsideView(tagNode: HTMLDivElement) {
-      const tagOffsetLeft = tagNode.offsetLeft
-      const tagoffsetRight = tagOffsetLeft + tagNode.offsetWidth
-      const viewMinLeft = scrollBarRef.current!.getScrollLeft()
-      const viewMaxLeft = viewMinLeft + container.offsetWidth
-      return tagOffsetLeft >= viewMinLeft && tagoffsetRight <= viewMaxLeft
-    }
-    const tagNodes = container.children[0].querySelectorAll('.ant-space-item') as NodeListOf<HTMLDivElement>;
-    const tagIndex = tabs.indexOf(route.absPath);
-    const tagNode = tagNodes[tagIndex];
-    const prevTagNode = tagNodes[tagIndex-1];
-    const nextTagNode = tagNodes[tagIndex+1];
-    if (tagNode == null) {
-      return;
-    }
-    if (!isTagInsideView(tagNode)) {
-      scrollBarRef.current!.scrollLeft(Math.max(tagNode.offsetLeft, 0));
-    }
-    if (prevTagNode && !isTagInsideView(prevTagNode)) {
-      scrollBarRef.current!.scrollLeft(Math.max(prevTagNode.offsetLeft, 0));
-    }
-    if (nextTagNode && !isTagInsideView(nextTagNode)) {
-      scrollBarRef.current!.scrollLeft(Math.max(
-        nextTagNode.offsetLeft - container.offsetWidth + nextTagNode.offsetWidth,
-        0
-      ));
-    }
-  }, [ tabs, route ])
+interface LocationType {
+  pathname: string
+  routeConfig: RouteConfig
+}
 
-  const handleScroll = useCallback((e: React.WheelEvent<Scrollbars>) => {
-    const scrollLeft = scrollBarRef.current!.getScrollLeft();
-    scrollBarRef.current!.scrollLeft(scrollLeft + ((e.deltaY > 0) ? 30 : -30));
-  }, []);
-  const handleCloseMenu = useCallback(() => {
-    setIsViewingMenu({
-      x: 0,
-      y: 0,
-      tag: undefined,
-      isViewing: false,
+export default function Tabs(props: TabsProps) {
+    const scrollBarRef = useRef<Scrollbars>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [viewingMenu, setIsViewingMenu] = useState<{
+        isViewing: boolean
+        locationForTag?: LocationType
+        x: number
+        y: number
+    }>({
+        isViewing: false,
+        locationForTag: undefined,
+        x: 0,
+        y: 0,
     })
-  }, [ setIsViewingMenu ])
-  const handleCloseTab = useCallback((tag: string) => {
-    const index = tabs.indexOf(tag);
-    if (index === -1) {
-      return;
-    }
-    const newTags = [ ...tabs ];
-    const newPaths = [ ...pathnames ];
-    newTags.splice(index, 1);
-    setTabs(newTags);
-    setPathnames(newPaths)
-    handleCloseMenu();
-    if (newTags.length > 0) {
-      if (tag !== route?.absPath) {
-        // 不是关闭当前标签，什么都不做
-        return;
-      }
-      const nearestIndex = Math.min(
-        Math.max(index - 1, 0),
-        newTags.length - 1
-      );
-      histroy.push(newTags[nearestIndex]);
-    }
-    if (newTags.length === 0) {
-      histroy.replace('/')
-    }
-  }, [ tabs, histroy, handleCloseMenu, route, pathnames ]);
-  const handleCloseOther = useCallback((tag: string) => {
-    const index = tabs.indexOf(tag);
-    if (index === -1) {
-      return;
-    }
-    const newTabs = [tabs[index]];
-    setTabs(newTabs);
-    setPathnames([pathnames[index]]);
-    histroy.replace(newTabs[0]);
-    handleCloseMenu();
-  }, [ tabs, histroy, handleCloseMenu, pathnames ])
-  const handleCloseAll = useCallback(() => {
-    setTabs([])
-    setPathnames([])
-    histroy.replace('/');
-    handleCloseMenu();
-  }, [ histroy, handleCloseMenu ])
-  const handleTagClick = useCallback((tag: string) => {
-    const tagI = tabs.indexOf(tag);
-    histroy.push(pathnames[tagI]);
-  }, [ histroy, tabs, pathnames ]);
-  const handleOpenMenu = useCallback((e: React.MouseEvent, tag?: string) => {
-    e.preventDefault();
-    setIsViewingMenu({
-      x: e.clientX,
-      y: e.clientY,
-      tag,
-      isViewing: true,
-    })
-  }, [ setIsViewingMenu ]);
-
-  const TagItems = useMemo(() => {
-    return Array.from(tabs).map(tag => {
-      const routeForTag: RouteConfig | undefined = routesMap.get(tag);
-      return routeForTag ? (
-        <Tag
-          key={tag}
-          closable={ tabs.length === 1 && routeForTag.absPath === '/' ? false : true }
-          color={ route?.absPath === routeForTag.absPath ? "#1890ff" : undefined}
-          onClick={e => handleTagClick(tag)}
-          onClose={(e: React.MouseEvent) => {
-            handleCloseTab(tag);
-          }}
-          onContextMenu={(e) => handleOpenMenu(e, tag)}
-          style={{
-            cursor: 'pointer',
-            padding: '2px 10px',
-            position: 'relative',
-          }}
+    // locations: 一个标签页的元信息，根据pathname区分
+    const [locations, setLocations] = useState<Array<LocationType>>([])
+    const location = useLocation()
+    const histroy = useHistory()
+    const route = useRouteConfig()
+    const blackList = props.blackList || ['/*']
+    useEffect(() => {
+        if (!route) {
+            return
+        }
+        if (
+            blackList.some(fn =>
+                typeof fn === 'string' ? fn === route.absPath : fn.test(route.absPath),
+            )
+        ) {
+            return
+        }
+        let tabLocation = find(locations, {
+            pathname: location.pathname,
+        })
+        if (tabLocation == null) {
+            setLocations([...locations, {pathname: location.pathname, routeConfig: route}])
+        }
+    }, [route, blackList, location, locations])
+    useLayoutEffect(() => {
+        // 校正滚动条位置。
+        if (!route) {
+            return
+        }
+        if (!scrollBarRef.current) {
+            return
+        }
+        if (!containerRef.current) {
+            return
+        }
+        const container = containerRef.current
+        function isTagInsideView(tagNode: HTMLDivElement) {
+            const tagOffsetLeft = tagNode.offsetLeft
+            const tagoffsetRight = tagOffsetLeft + tagNode.offsetWidth
+            const viewMinLeft = scrollBarRef.current!.getScrollLeft()
+            const viewMaxLeft = viewMinLeft + container.offsetWidth
+            return tagOffsetLeft >= viewMinLeft && tagoffsetRight <= viewMaxLeft
+        }
+        const tagNodes = container.children[0].querySelectorAll('.ant-space-item') as NodeListOf<
+            HTMLDivElement
         >
-          {routeForTag.title}
-        </Tag>
-      ) : null;
-    });
+        const tagIndex = findIndex(locations, {pathname: location.pathname})
+        const tagNode = tagNodes[tagIndex]
+        const prevTagNode = tagNodes[tagIndex - 1]
+        const nextTagNode = tagNodes[tagIndex + 1]
+        if (tagNode == null) {
+            return
+        }
+        if (!isTagInsideView(tagNode)) {
+            scrollBarRef.current!.scrollLeft(Math.max(tagNode.offsetLeft, 0))
+        }
+        if (prevTagNode && !isTagInsideView(prevTagNode)) {
+            scrollBarRef.current!.scrollLeft(Math.max(prevTagNode.offsetLeft, 0))
+        }
+        if (nextTagNode && !isTagInsideView(nextTagNode)) {
+            scrollBarRef.current!.scrollLeft(
+                Math.max(
+                    nextTagNode.offsetLeft - container.offsetWidth + nextTagNode.offsetWidth,
+                    0,
+                ),
+            )
+        }
+    }, [route, locations, location.pathname])
 
-  }, [ tabs, routesMap, handleCloseTab, handleTagClick, route, handleOpenMenu ]);
-  return (
-    <div ref={containerRef} style={{ position: 'relative', padding: '5px', backgroundColor: '#fff' }}>
-      <Scrollbars ref={scrollBarRef} autoHeight autoHide onWheel={handleScroll}>
-        <Space size={2}>
-          {TagItems}
-        </Space>
-      </Scrollbars>
-       { viewingMenu.isViewing && containerRef.current ?
-          <TabsMenu
-            {...viewingMenu}
-            tag={viewingMenu.tag as string}
-            container={containerRef.current}
-            onMenuClose={handleCloseMenu}
-            onCloseTag={() => handleCloseTab(viewingMenu.tag as string)}
-            onCloseOtherTag={() => handleCloseOther(viewingMenu.tag as string)}
-            onCloseAllTag={handleCloseAll}
-          ></TabsMenu>
-          : null }
-    </div>
-  );
+    const handleScroll = useCallback((e: React.WheelEvent<Scrollbars>) => {
+        const scrollLeft = scrollBarRef.current!.getScrollLeft()
+        scrollBarRef.current!.scrollLeft(scrollLeft + (e.deltaY > 0 ? 30 : -30))
+    }, [])
+    const handleCloseMenu = useCallback(() => {
+        setIsViewingMenu({
+            x: 0,
+            y: 0,
+            locationForTag: undefined,
+            isViewing: false,
+        })
+    }, [setIsViewingMenu])
+    const handleCloseTab = useCallback(
+        (locationForTag: LocationType) => {
+            const index = locations.indexOf(locationForTag)
+            if (index === -1) {
+                return
+            }
+            const newLocations = [...locations]
+            newLocations.splice(index, 1)
+            setLocations(newLocations)
+            handleCloseMenu()
+            if (newLocations.length > 0) {
+                if (locationForTag.pathname !== location.pathname) {
+                    // 不是关闭当前标签，什么都不做
+                    return
+                }
+                const nearestIndex = Math.min(Math.max(index - 1, 0), newLocations.length - 1)
+                histroy.push(newLocations[nearestIndex].pathname)
+            }
+            if (newLocations.length === 0) {
+                histroy.replace('/')
+            }
+        },
+        [locations, handleCloseMenu, location.pathname, histroy],
+    )
+    const handleCloseOther = useCallback(
+        (locationForTag: LocationType) => {
+            const index = locations.indexOf(locationForTag)
+            if (index === -1) {
+                return
+            }
+            const newLocations = [locations[index]]
+            setLocations(newLocations)
+            histroy.replace(newLocations[0].pathname)
+            handleCloseMenu()
+        },
+        [histroy, handleCloseMenu, locations],
+    )
+    const handleCloseAll = useCallback(() => {
+        setLocations([])
+        histroy.replace('/')
+        handleCloseMenu()
+    }, [histroy, handleCloseMenu])
+    const handleTagClick = useCallback(
+        (locationForTag: LocationType) => {
+            histroy.push(locationForTag.pathname)
+        },
+        [histroy],
+    )
+    const handleOpenMenu = useCallback(
+        (e: React.MouseEvent, locationForTag?: LocationType) => {
+            e.preventDefault()
+            setIsViewingMenu({
+                x: e.clientX,
+                y: e.clientY,
+                locationForTag,
+                isViewing: true,
+            })
+        },
+        [setIsViewingMenu],
+    )
+
+    const TagItems = useMemo(() => {
+        return locations.map((locationForTag, i) => {
+            const routeForTag: RouteConfig | undefined = locationForTag.routeConfig
+            return routeForTag ? (
+                <Tag
+                    key={locationForTag.pathname}
+                    closable={locations.length === 1 ? false : true}
+                    color={location.pathname === locationForTag.pathname ? '#1890ff' : undefined}
+                    onClick={e => handleTagClick(locationForTag)}
+                    onClose={(e: React.MouseEvent) => {
+                        handleCloseTab(locationForTag)
+                    }}
+                    onContextMenu={e => handleOpenMenu(e, locationForTag)}
+                    style={{
+                        cursor: 'pointer',
+                        padding: '5px 7px',
+                        position: 'relative',
+                    }}
+                >
+                    {routeForTag.title}
+                </Tag>
+            ) : null
+        })
+    }, [locations, location.pathname, handleTagClick, handleCloseTab, handleOpenMenu])
+    return (
+        <div ref={containerRef} style={{position: 'relative', margin: '5px'}}>
+            <Scrollbars ref={scrollBarRef} autoHeight autoHide onWheel={handleScroll}>
+                <Space size={2}>{TagItems}</Space>
+            </Scrollbars>
+            {viewingMenu.isViewing && containerRef.current ? (
+                <TabsMenu
+                    {...viewingMenu}
+                    locationForTag={viewingMenu.locationForTag as LocationType}
+                    container={containerRef.current}
+                    onMenuClose={handleCloseMenu}
+                    onCloseTag={() => handleCloseTab(viewingMenu.locationForTag as LocationType)}
+                    onCloseOtherTag={() =>
+                        handleCloseOther(viewingMenu.locationForTag as LocationType)
+                    }
+                    onCloseAllTag={handleCloseAll}
+                ></TabsMenu>
+            ) : null}
+        </div>
+    )
 }

@@ -59,6 +59,15 @@ const TableDemo = () => {
     const tabelChange = (pagination: any, filters: any, sorter: any, extra: any) => {
         console.log(pagination, filters, sorter, extra)
     }
+    const refreshFn = () => {
+        console.log('refreshFn')
+    }
+    const downloadFn = () => {
+        console.log('downloadFn')
+    }
+    const filtersFn = () => {
+        console.log('filters')
+    }
     const headerTop = (
         <div>
             <button
@@ -87,6 +96,9 @@ const TableDemo = () => {
                 tableTools={headerTop}
                 dataSource={datas}
                 onChange={tabelChange}
+                refresh={refreshFn}
+                download={downloadFn}
+                filters={filtersFn}
             />
         </>
     )

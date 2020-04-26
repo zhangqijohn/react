@@ -1,9 +1,9 @@
-export function getPriority(a) {
+export function getPriority(a:any) {
   return !a.fixed && a.fixed !== true ? 1 : (a.fixed === 'right' ? 2 : 0)
 }
 // 固定项重新排序
-export function sortArr(arr) {
-  return arr.sort((a, b) => {
+export function sortArr(arr:any) {
+  return arr.sort((a:any, b:any) => {
     const priorityA = getPriority(a)
     const priorityB = getPriority(b)
     if (priorityA !== priorityB) {

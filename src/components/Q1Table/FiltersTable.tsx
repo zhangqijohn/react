@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import {Button, Form, Input, Select, Popconfirm, Table} from 'antd'
-import {EditableTablePropsType, EditableTableColumnsType, Q1DataEntryJsonType} from './index.d'
-import {filterTypeOptions, filterTypeOptionsType} from './enum'
+import {EditableTablePropsType, EditableTableColumnsType, Q1DataEntryJsonType} from '@/components/Q1DataEntry/index.d'
+import {filterTypeOptions} from './js/enum'
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+    editable?: boolean
     editing: boolean
     dataIndex: string
     title: any
@@ -11,14 +12,20 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     record: Q1DataEntryJsonType
     index: number
     children: React.ReactNode
+    handleSave: any
 }
 
-const EditableTable: React.FC<EditableTablePropsType> = props => {
+interface FiltersTableProps {
+    data: any[]
+    filtersTableChange: (val: any) => void
+}
+
+const FiltersTable: React.FC<FiltersTableProps> = props => {
     const [form] = Form.useForm()
     const [data, setData] = useState(props.data)
     const [editingKey, setEditingKey] = useState<number | string>('')
 
-    const isEditing = (record: Q1DataEntryJsonType) => record.id === editingKey
+    // const isEditing = (record: Q1DataEntryJsonType) => record.id === editingKey
 
     const edit = (record: Q1DataEntryJsonType) => {
         form.setFieldsValue({name: '', age: '', address: '', ...record})
@@ -53,75 +60,36 @@ const EditableTable: React.FC<EditableTablePropsType> = props => {
     }
 
     const submitSave = () => {
-        props.dataSourceChange && props.dataSourceChange(data)
+        // props.dataSourceChange && props.dataSourceChange(data)
     }
 
     const columns: EditableTableColumnsType[] = [
         {
-            title: '标签名',
-            dataIndex: 'label',
-            editable: true,
-            inputType: 'number',
-        },
-        {
-            title: '标签字段名',
-            dataIndex: 'name',
+            title: '列名',
+            dataIndex: 'filterName',
+            inputType: 'select',
             editable: true,
         },
         {
-            title: '类型',
-            dataIndex: 'templateType',
+            title: '筛选类型',
+            dataIndex: 'filterType',
+            inputType: 'select',
             editable: true,
         },
         {
-            title: '参数',
-            dataIndex: 'params',
-            width: '30%',
+            title: '筛选列值',
+            dataIndex: 'filterValue',
             editable: true,
-            render: (text: any) => JSON.stringify(text),
-        },
-        {
-            title: '是否显示',
-            dataIndex: 'hidden',
-            editable: true,
-            render: (text: any) => (text === true ? '隐藏' : '显示'),
         },
         {
             title: '操作',
-            dataIndex: 'operation',
+            dataIndex: 'action',
+            width: 60,
             render: (text: any, record: Q1DataEntryJsonType) => {
-                const editable = isEditing(record)
-                return editable ? (
-                    <span>
-                        <Button type="link" onClick={() => save(record.id)}>
-                            保存
-                        </Button>
-                        <Button type="link" onClick={cancel}>
-                            取消
-                        </Button>
-                        {/*<Popconfirm title="确认是否保存?"  okText="是" cancelText="否" onConfirm={() => save(record.id)}>
-                            <Button type='link'>保存</Button>
-                        </Popconfirm>
-                        <Popconfirm title="确认是否取消?"  okText="是" cancelText="否" onConfirm={cancel}>
-                            <Button type='link'>取消</Button>
-                        </Popconfirm>*/}
-                    </span>
-                ) : (
-                    <span>
-                        <Button type="link" disabled={editingKey !== ''} onClick={() => edit(record)}>
-                            编辑
-                        </Button>
-                        <Popconfirm
-                            title="确认是否删除?"
-                            okText="是"
-                            cancelText="否"
-                            onConfirm={() => handleDelete(record.id)}
-                        >
-                            <Button type="link" disabled={editingKey !== ''}>
-                                删除
-                            </Button>
-                        </Popconfirm>
-                    </span>
+                return (
+                    <Button type="link" onClick={cancel}>
+                        删除
+                    </Button>
                 )
             },
         },
@@ -152,16 +120,15 @@ const EditableTable: React.FC<EditableTablePropsType> = props => {
             ...col,
             onCell: (record: Q1DataEntryJsonType) => ({
                 record,
-                inputType: col.dataIndex === 'templateType' ? 'select' : 'text',
+                inputType: col.inputType === 'select' ? 'select' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
-                editing: isEditing(record),
+                // editing: isEditing(record),
             }),
         }
     })
 
     const EditableCell: React.FC<EditableCellProps> = ({
-        editing,
         dataIndex,
         title,
         inputType,
@@ -171,9 +138,17 @@ const EditableTable: React.FC<EditableTablePropsType> = props => {
         ...restProps
     }) => {
         const inputNode =
-            inputType === 'select' ? (
+            dataIndex === 'filterName' ? (
                 <Select>
-                    {filterTypeOptions.map((item: filterTypeOptionsType, index: number) => (
+                    {filterTypeOptions.map((item: any, index: number) => (
+                        <Select.Option value={item.value} key={index}>
+                            {item.label}
+                        </Select.Option>
+                    ))}
+                </Select>
+            ) : dataIndex === 'filterType' ? (
+                <Select>
+                    {filterTypeOptions.map((item: any, index: number) => (
                         <Select.Option value={item.value} key={index}>
                             {item.label}
                         </Select.Option>
@@ -185,37 +160,34 @@ const EditableTable: React.FC<EditableTablePropsType> = props => {
 
         return (
             <td {...restProps}>
-                {editing ? (
-                    <Form.Item
-                        name={dataIndex}
-                        style={{margin: 0}}
-                        rules={[
-                            {
-                                required: true,
-                                message: `Please Input ${title}!`,
-                            },
-                        ]}
-                    >
-                        {inputNode}
-                    </Form.Item>
-                ) : (
-                    children
-                )}
+                <Form.Item
+                    name={dataIndex}
+                    style={{margin: 0}}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    {dataIndex ? inputNode : children}
+                </Form.Item>
             </td>
         )
     }
+
+    console.log(data)
     return (
         <Form form={form} component={false}>
             <Button onClick={handleAdd} type="primary" style={{marginBottom: 16, marginRight: 16}}>
-                新增规则
+                添加
             </Button>
-            <Button onClick={submitSave} type="primary" style={{marginBottom: 16}}>
-                提交修改
+            <Button onClick={handleAdd} type="primary" style={{marginBottom: 16, marginRight: 16}}>
+                清空
             </Button>
             <Table
                 components={{
                     body: {
-                        /* row: EditableRow,*/
                         cell: EditableCell,
                     },
                 }}
@@ -230,4 +202,4 @@ const EditableTable: React.FC<EditableTablePropsType> = props => {
     )
 }
 
-export default EditableTable
+export default FiltersTable

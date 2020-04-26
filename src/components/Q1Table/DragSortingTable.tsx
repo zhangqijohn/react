@@ -5,7 +5,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import {PushpinOutlined} from '@ant-design/icons'
 import {sortArr} from './js/sortArr'
-import {ColumnPropsSwith, fixedType, PropsType} from './Q1Table'
+import {ColumnPropsSwith, fixedType, DragSortingTablePropsType} from './Q1Table'
 
 const type = 'DragbleBodyRow';
 
@@ -46,7 +46,7 @@ const DragableBodyRow = ({index, moveRow, className, style, ...restProps}: any):
 };
 
 
-function DragSortingTable(props: PropsType) {
+function DragSortingTable(props: DragSortingTablePropsType) {
   const originDate = props.columns // 保存原始数据
   const originDateKeys = (originDate.length && originDate.map((item: any) => {
     if (item.switch) {

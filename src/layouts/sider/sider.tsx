@@ -1,28 +1,34 @@
-import React from 'react';
-import { Layout } from 'antd';
-import logo from "@/assets/logo.png";
-import Menu from '@/layouts/menu/menu';
-import './sider.scss';
+import React from 'react'
+import {Layout} from 'antd'
+import logo from '@/assets/logo.png'
+import Menu from '@/layouts/menu/menu'
+import './sider.scss'
+import {StoreType} from '@/store'
+import {inject, observer} from 'mobx-react'
 
-const Sider = Layout.Sider;
+export interface SiderProps {}
 
-export interface SiderProps {
-  collapsed: boolean;
-}
+export interface MobxSiderProps extends SiderProps, Pick<StoreType, 'UIState' | 'Setting'> {}
 
-export default function (props: SiderProps) {
-  return (
-    <Sider
-        trigger={null}
-        collapsible
-        collapsed={ props.collapsed }
-        className="q1-sider"
-    >
-      <div className="logo">
-          <img src={logo} alt="冰川网络"/>
-          <h1>冰川业务中台</h1>
-      </div>
-      <Menu theme="dark" mode="inline" />
-    </Sider>
-  )
-}
+export default inject(
+    'UIState',
+    'Setting',
+)(
+    observer(function Sider(props: SiderProps) {
+        const {UIState, Setting} = props as MobxSiderProps
+        return (
+            <Layout.Sider
+                trigger={null}
+                collapsible
+                collapsed={UIState.menuCollapsed}
+                className="q1-sider"
+            >
+                <div className="logo">
+                    <img src={logo} alt="冰川网络" />
+                    <h1>{Setting.appName}</h1>
+                </div>
+                <Menu theme="dark" mode="inline" />
+            </Layout.Sider>
+        )
+    }),
+)
