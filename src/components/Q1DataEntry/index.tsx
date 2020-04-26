@@ -9,9 +9,9 @@ import {
 
 function Index(props: Q1DataEntryJsonType) {
     const getType = () => {
-        let {templateType, params, permit} = {...props}
+        let {templateType, params, hidden} = {...props}
         templateType = templateType.toLocaleLowerCase()
-        if (permit === false) return
+        if (hidden === true) return
         if (templateType === 'input') {
             return <Input {...params} onChange={props.onChange} onPressEnter={props.onPressEnter}/>
         } else if (templateType === 'textarea') {

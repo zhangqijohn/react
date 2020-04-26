@@ -4,9 +4,8 @@ import NotFount from '@/pages/NotFount';
 import Q1Table from '@/pages/Q1Table';
 import IconHandle from '@/pages/Icon/IconHandle';
 import Q1Form from '@/pages/Q1Form';
+import Interval from '@/pages/G2/Interval';
 import Test from '@/pages/test';
-import AdvancedFilter2 from '@/pages/AdvancedFilter2/Index';
-
 
 interface ConfigurableRoute {
   path: string,
@@ -56,10 +55,17 @@ const configurableRoutes: ConfigurableRoute[] = [
     component: Q1Form,
   },
   {
-    path: "/AdvancedFilter2",
+    path: "/g2",
     icon: 'app',
-    title: '表单1',
-    component: AdvancedFilter2,
+    title: '图表',
+    routes: [
+      {
+        path: "interval",
+        icon: 'rule',
+        title: "柱状图",
+        component: Interval,
+      },
+    ]
   },
   {
     path: "/test/",

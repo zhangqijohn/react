@@ -2,7 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 
 const request = axios.create({
-    timeout: 5000
+    timeout: 50000
 })
 
 request.interceptors.response.use(

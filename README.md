@@ -3,7 +3,7 @@
 # 技术栈
 
 > Web客户端
-+ 前端框架：React + React-router + Redux + React-hook
++ 前端框架：React + React-hook + React-router-dom + Mobx
 + 前端UI库：Ant-Design UI
 + 底层框架：Create-react-app + Webpack  + Nodejs
 + 开发规范： eslint + prettier + standard + jsdoc

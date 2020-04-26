@@ -34,6 +34,7 @@ export interface ParamsType {
     maxTagTextLength?: number
     showSearch?: boolean
     showArrow?: boolean
+
     [key: string]: any
 }
 
@@ -64,15 +65,16 @@ export interface Q1DataEntryJsonType extends TextareaType {
     label?: string
     rules?: Array<RulesType>
     gameid?: number
-    permit?: boolean
+    hidden?: boolean
 }
 
 export interface EditableTablePropsType extends TextareaType {
     data: Q1DataEntryJsonType[]
+    dataSourceChange?: (data: Q1DataEntryJsonType[]) => void;
 }
 
 export interface EditableTableColumnsType {
-    id?: number
+    id?: number;
     title?: React.ReactNode;
     key?: React.Key;
     dataIndex?: string | string[];
@@ -84,6 +86,19 @@ export interface EditableTableColumnsType {
     defaultSortOrder?: 'ascend' | 'descend';
     switch?: 0 | 1 | undefined;
     fixed?: fixedType;
-    editable?: boolean
+    editable?: boolean;
+
     [index: string]: any;
+}
+
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+    editable?: boolean;
+    editing: boolean;
+    dataIndex: string;
+    title: any;
+    inputType: any;
+    record: Q1DataEntryJsonType;
+    index: number;
+    children: React.ReactNode;
+    handleSave: any;
 }
