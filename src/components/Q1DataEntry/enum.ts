@@ -1,10 +1,9 @@
-
 export interface filterTypeOptionsType {
-    value: string;
-    label: string;
+    value: string
+    label: string
 }
 
-export const filterTypeOptions:filterTypeOptionsType[] = [
+export const filterTypeOptions: filterTypeOptionsType[] = [
     {value: 'input', label: '输入框'},
     {value: 'select', label: '下拉选择框'},
     {value: 'radio', label: '单选框'},

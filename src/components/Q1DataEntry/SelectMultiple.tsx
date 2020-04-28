@@ -14,18 +14,31 @@ function SelectMultiple(props: SelectMultipleProps) {
     const [searchTxt, setSearchTxt] = useState('')
 
     const handleChange = (v: any) => {
+        if (v.length === 0) {
+            setSearchTxt('')
+            setOptionS(options)
+        }
         setSelectvalue(v)
     }
-    const handleSearch = (v: any) => {
-        // 根据查找字段全选为完成
-        setSearchTxt(v)
-        setOptionS(optionS.filter(item => item[values].toString().indexOf(searchTxt) > -1))
+
+    const handleFocus = () => {
+        setOptionS(options)
     }
-    const handleClear = (v: any) => {
+    const handleSearch = (v: any) => {
+        // 保存查找字段,用以筛选后的全选
+        setSearchTxt(v)
+
+        setOptionS(v.trim() === '' ? options : options.filter(item => item[values].toString().indexOf(v) > -1))
+    }
+
+    const handleClear = () => {
         setSelectvalue([])
+        setSearchTxt('')
+        setOptionS(options)
     }
     const handleSelectAll = () => {
-        let result: any[] = []
+        console.log('handleSelectAll')
+        let result = []
         if (searchTxt) {
             result = optionS
                 .filter((item, index) => item[values].toString().indexOf(searchTxt) > -1)
@@ -62,11 +75,12 @@ function SelectMultiple(props: SelectMultipleProps) {
             maxTagTextLength={7}
             onChange={handleChange}
             onSearch={handleSearch}
+            onFocus={handleFocus}
             dropdownRender={menu => (
                 <div>
                     {menu}
                     <Divider style={{margin: '4px 0'}} />
-                    <div style={{display: 'flex', flexWrap: 'nowrap', padding: 8}}>
+                    <div style={{display: 'flex', flexWrap: 'nowrap', padding: 8, justifyContent: 'flex-end'}}>
                         <span style={{marginRight: 4}}>共{optionS.length}行</span>
                         <Button size="small" style={{marginRight: 4}} onClick={handleClear}>
                             清除
