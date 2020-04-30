@@ -1,22 +1,33 @@
-import React, {useState} from 'react'
+import React, {useState, useMemo, useEffect, useRef} from 'react'
 import {Col, Dropdown, Menu, Row, Table, Tooltip, Modal} from 'antd'
 import {ColumnHeightOutlined, SettingOutlined, RedoOutlined, DownloadOutlined, FilterOutlined} from '@ant-design/icons'
-import {ColumnPropsSwith, Q1TablePropsType, SizeType, SizeValType} from './Q1Table'
+import {ColumnPropsSwith, Q1TablePropsType, SizeType, PaginationType, filterTypeOptionsType} from './Q1Table.d'
 import DragSortingTable from './DragSortingTable'
-import FiltersTable from './FiltersTable'
+import FilterItems from './FilterItems'
 import {sizeOptions} from './js/enum'
 import './css/q1-table.scss'
-import EditableTable from '@/components/Q1DataEntry/EditableTable'
 
 const Q1Table = (props: Q1TablePropsType) => {
     // 过滤原始数据，清除switch为0或者不存在的
-    const {columns, size, dataSource, showHeaderRightTool} = {...props}
+    const {columns, size, dataSource, showHeaderRightTool, pagination} = {...props}
     const columnsQ1Trans = (columns && columns.length && columns.filter((item: any) => item.switch)) || []
-    const [showModal, setShowModal] = useState(true)
+    const [showFilterItems, setShowFilterItems] = useState(true)
     const [columnsQ1, setColumnsQ1] = useState(columnsQ1Trans)
     const [sizeQ1, setSizeQ1] = useState<SizeType>(size || 'large')
     const [cloSetVisible, setCloSetVisible] = useState<boolean>(false)
     const [showHRTool] = useState(showHeaderRightTool === undefined ? true : showHeaderRightTool)
+
+    const paginationProps: PaginationType = {
+        current: props?.pagination?.current || 1,
+        pageSize: props?.pagination?.pageSize || 20,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        position: ['bottomRight'],
+        showSizeChanger: true,
+        showQuickJumper: true,
+        showTotal: () => `共 ${props?.pagination?.total || 0} 条`,
+        total: props?.pagination?.total || 0,
+    }
+
     const handleTableChange = (page: any, filters: any, sorter: any) => {
         props.onChange(page, filters, sorter)
     }
@@ -50,8 +61,11 @@ const Q1Table = (props: Q1TablePropsType) => {
     const handleVisibleChange = (bool: boolean) => {
         setCloSetVisible(bool)
     }
-    const filtersTableChange = (val: any) => {
-        console.log('filtersTableChange')
+    const filterItemsOk = (val: any) => {
+        setShowFilterItems(false)
+        console.log(val)
+
+        props.filters(val)
     }
 
     return (
@@ -101,7 +115,7 @@ const Q1Table = (props: Q1TablePropsType) => {
                             <FilterOutlined
                                 className="table-tools"
                                 onClick={() => {
-                                    setShowModal(true)
+                                    setShowFilterItems(true)
                                 }}
                             />
                         </Tooltip>
@@ -110,27 +124,26 @@ const Q1Table = (props: Q1TablePropsType) => {
             </Row>
             <Modal
                 title="多列筛选"
-                width={'56%'}
-                visible={showModal}
-                onOk={() => {
-                    console.log('ok')
-                }}
-                onCancel={() => {
-                    setShowModal(false)
-                }}
-                cancelText="取消"
-                okText="筛选"
+                width={800}
+                footer={null}
+                visible={showFilterItems}
+                onCancel={() => setShowFilterItems(false)}
             >
-                <FiltersTable data={columnsQ1 || []} filtersTableChange={filtersTableChange} />
+                <FilterItems
+                    data={columnsQ1 || []}
+                    filterItemsOk={filterItemsOk}
+                    filterItemsCancel={() => setShowFilterItems(false)}
+                />
             </Modal>
             <Table
+                {...props}
                 className="q1-layout-table"
                 rowClassName="editable-row"
-                {...props}
                 size={sizeQ1}
                 dataSource={dataSource}
                 columns={columnsQ1}
                 onChange={handleTableChange}
+                pagination={paginationProps}
             />
         </>
     )

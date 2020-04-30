@@ -52,6 +52,27 @@ export interface DragSortingTablePropsType {
     colChange?: (data: ColumnPropsSwith[]) => void
 }
 
+export declare type PaginationPosition =
+    | 'top'
+    | 'bottom'
+    | 'both'
+    | 'topLeft'
+    | 'topCenter'
+    | 'topRight'
+    | 'bottomLeft'
+    | 'bottomCenter'
+    | 'bottomRight'
+export interface PaginationType {
+    showSizeChanger?: boolean
+    showQuickJumper?: boolean
+    current?: number
+    pageSize?: number
+    total?: number
+    pageSizeOptions?: string[]
+    position?: PaginationPosition[]
+    showTotal?: () => React.ReactNode
+}
+
 export interface Q1TablePropsType {
     bordered?: boolean
     columns?: ColumnPropsSwith[]
@@ -62,5 +83,6 @@ export interface Q1TablePropsType {
     components?: any
     tableTools?: React.ReactNode
     showHeaderRightTool?: boolean | undefined
+    pagination?: PaginationType
     [index: string]: any
 }

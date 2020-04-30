@@ -1,7 +1,6 @@
 import React from 'react'
 import moment from 'moment'
 import {Checkbox, DatePicker, Input, Radio, Rate, Select, Slider, Switch, TimePicker} from 'antd'
-import locale from 'antd/es/date-picker/locale/zh_CN'
 import {Q1DataEntryJsonType, RadioOptionType} from './index.d'
 import SelectMultiple from './SelectMultiple'
 
@@ -11,7 +10,7 @@ function Index(props: Q1DataEntryJsonType) {
         templateType = templateType.toLocaleLowerCase()
         if (hidden === true) return
         if (templateType === 'input') {
-            return <Input {...params} onChange={props.onChange} onPressEnter={props.onPressEnter} />
+            return <Input {...params} allowClear onChange={props.onChange} onPressEnter={props.onPressEnter} />
         } else if (templateType === 'textarea') {
             const {prefix, addonBefore, addonAfter, placeholder, ...paramsTextArea} = {...params}
             return (
@@ -97,7 +96,7 @@ function Index(props: Q1DataEntryJsonType) {
                 showSearch,
                 showArrow,
             } = {...params}
-            const singleSelect = (
+            return (
                 <Select
                     mode={mode}
                     size={size}
@@ -120,14 +119,24 @@ function Index(props: Q1DataEntryJsonType) {
                         })}
                 </Select>
             )
-            const multipleSelect = <SelectMultiple options={options} values={'value'} label={'label'} />
-            return mode === 'multiple' ? multipleSelect : singleSelect
+        } else if (templateType === 'selectmultiple') {
+            const {options, size, placeholder, disabled} = {...params}
+            return (
+                <SelectMultiple
+                    size={size}
+                    options={options}
+                    values={'value'}
+                    label={'label'}
+                    placeholder={placeholder || '请选择'}
+                    disabled={disabled}
+                    onChange={props.onChange}
+                />
+            )
         } else if (templateType === 'timepicker') {
             const {defaultValue, placeholder, size} = {...params}
             const defaultValueTrans = defaultValue ? moment(defaultValue, 'HH:mm:ss') : undefined
             return (
                 <TimePicker
-                    locale={locale}
                     defaultValue={defaultValueTrans}
                     onChange={props.onChange}
                     placeholder={placeholder || '请选择时间'}
@@ -137,12 +146,41 @@ function Index(props: Q1DataEntryJsonType) {
         } else if (templateType === 'datepicker') {
             const {defaultValue, placeholder, size} = {...params}
             const defaultValueTrans = defaultValue ? moment(defaultValue, 'YYYY-MM-DD') : undefined
+            const onChange = (val: any) => {
+                props.onChange && props.onChange(val.toISOString())
+            }
             return (
                 <DatePicker
-                    locale={locale}
+                    showTime
                     defaultValue={defaultValueTrans}
-                    onChange={props.onChange}
+                    onChange={onChange}
                     placeholder={placeholder || '请选择日期'}
+                    size={size}
+                />
+            )
+        } else if (templateType === 'rangepicker') {
+            const {defaultValue, size} = {...params}
+            const onChange = (val: any) => {
+                props.onChange && props.onChange([val[0].toISOString(), val[1].toISOString()])
+            }
+            return (
+                <DatePicker.RangePicker
+                    showTime
+                    defaultValue={
+                        Array.isArray(defaultValue) && defaultValue.length
+                            ? [moment(defaultValue[0], 'YYYY-MM-DD'), moment(defaultValue[1], 'YYYY-MM-DD')]
+                            : undefined
+                    }
+                    onChange={onChange}
+                    ranges={{
+                        今日: [moment(), moment()],
+                        昨日: [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+                        最近一周: [moment().subtract(6, 'days'), moment()],
+                        最近一个月: [moment().subtract(1, 'month'), moment()],
+                        最近三个月: [moment().subtract(3, 'month'), moment()],
+                        最近半年: [moment().subtract(6, 'month'), moment()],
+                        最近一年: [moment().subtract(1, 'year'), moment()],
+                    }}
                     size={size}
                 />
             )

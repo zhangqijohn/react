@@ -1,6 +1,6 @@
 .q1-table-tool-row {
     .q1-table-tool-row-left {
-        max-width: calc(1000%-200px);
+        max-width: calc(100% - 200px);
     }
     .q1-table-tool-row-right {
         text-align: right;
@@ -10,6 +10,30 @@
             font-size: 16px;
             margin-right: 16px;
             padding-top: 8px;
+        }
+    }
+}
+
+.q1-table-filter {
+    .ant-table-tbody {
+        tr {
+            td {
+                padding: 4px;
+            }
+        }
+    }
+}
+.q1-layout-table {
+    /deep/ .ant-table-tbody {
+        tr {
+            td {
+                &:empty:before {
+                    content: '-';
+                }
+                *:empty:before {
+                    content: '-';
+                }
+            }
         }
     }
 }

@@ -2,13 +2,22 @@ import React, {useState} from 'react'
 import {Select, Divider, Button} from 'antd'
 
 interface SelectMultipleProps {
+    size?: 'large' | 'middle' | 'small'
     options: any[] // 选项
     values?: any // 若是JSON数据，则需要指定values的key
     label?: any // 若是JSON数据,还需指定显示对应的label
+    placeholder?: string
+    disabled?: boolean
+    allowClear?: boolean
+    maxTagCount?: number
+    maxTagTextLength?: number
+    showSearch?: boolean
+    showArrow?: boolean
+    onChange?: any
 }
 
 function SelectMultiple(props: SelectMultipleProps) {
-    let {options, values, label} = {...props}
+    const {values, label, options, size, placeholder, disabled} = {...props}
     const [optionS, setOptionS] = useState(options)
     const [selectvalue, setSelectvalue] = useState<any[]>([])
     const [searchTxt, setSearchTxt] = useState('')
@@ -19,16 +28,15 @@ function SelectMultiple(props: SelectMultipleProps) {
             setOptionS(options)
         }
         setSelectvalue(v)
+        props.onChange(v)
     }
 
     const handleFocus = () => {
         setOptionS(options)
     }
     const handleSearch = (v: any) => {
-        // 保存查找字段,用以筛选后的全选
-        setSearchTxt(v)
-
-        setOptionS(v.trim() === '' ? options : options.filter(item => item[values].toString().indexOf(v) > -1))
+        setSearchTxt(v) // 保存查找字段,用于筛选后的全选
+        setOptionS(v.trim() === '' ? options : options.filter(item => item[values]?.toString().indexOf(v) > -1))
     }
 
     const handleClear = () => {
@@ -37,7 +45,6 @@ function SelectMultiple(props: SelectMultipleProps) {
         setOptionS(options)
     }
     const handleSelectAll = () => {
-        console.log('handleSelectAll')
         let result = []
         if (searchTxt) {
             result = optionS
@@ -66,7 +73,9 @@ function SelectMultiple(props: SelectMultipleProps) {
         <Select
             value={selectvalue}
             style={{minWidth: 240}}
-            placeholder="请选择"
+            placeholder={placeholder}
+            disabled={disabled}
+            size={size}
             mode="multiple"
             allowClear
             showArrow={true}

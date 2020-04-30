@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React from 'react'
 
 function Chart() {
     return (
@@ -10,5 +9,3 @@ function Chart() {
 }
 
 export default Chart
-
-

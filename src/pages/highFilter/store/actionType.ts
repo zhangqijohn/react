@@ -1,0 +1,6 @@
+export const ADD_TODO = 'add_todo'
+export const UPDATE_ADVANCEDFILTER = 'update_advancedfilter'
+export const SET_TEMPLATENAME = 'set_templatename'
+export const CHANGE_FILTERSELECT = 'change_filterselect'
+export const CHANGE_ADVFILTERVISIBLE = 'change_advfiltervisible'
+export const GET_ADVANCEDFILTERRESULT = 'get_advancedfilterresult'
