@@ -24,7 +24,7 @@
   "dependencies": {
     "egg": "^2.6.1",
     "egg-scripts": "^2.6.0",
-    "grpc": "^1.24.2",
+    "grpc": "^1.24.9",
     "ldapjs": "^1.0.2",
     "mysql": "^2.18.1",
     "typeorm": "^0.2.24"
